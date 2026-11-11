@@ -284,7 +284,7 @@
       <!-- Chat -->
       <div id="chat-section">
         <hr class="chat-divider">
-        <div class="chat-label">Ask about this word</div>
+        <div class="chat-label">Ask AI</div>
         <div id="chat-messages">
           <div id="chat-empty">Ask anything — grammar, usage, examples…</div>
         </div>
@@ -659,10 +659,6 @@ function showCard(card) {
   document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl,3), 3);
 
   document.getElementById('study-delete-btn').style.display = '';
-
-  // Update chat placeholder with current word
-  document.getElementById('chat-input').placeholder =
-    `Ask about "${card.de}"…`;
 }
 
 function flipCard() {
