@@ -211,6 +211,28 @@
   .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--text2); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .select { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 15px; padding: 12px 14px; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%238888a0'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  /* ── Search overlay ── */
+  #search-overlay { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: none; flex-direction: column; }
+  #search-overlay.open { display: flex; }
+  #search-header { display: flex; align-items: center; gap: 10px; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 16px; flex-shrink: 0; }
+  #search-overlay-input { flex: 1; }
+  #search-results { flex: 1; overflow-y: auto; padding: 0 16px; -webkit-overflow-scrolling: touch; }
+  .search-result-row { border-bottom: 1px solid var(--border); padding: 12px 0; cursor: pointer; }
+  .search-result-row:active { opacity: 0.7; }
+  .search-result-de { font-weight: 600; font-size: 15px; }
+  .search-result-en { color: var(--text2); font-size: 13px; margin-top: 2px; }
+  #search-empty { text-align: center; color: var(--text3); font-size: 14px; padding: 24px 0; display: none; }
+
+  /* ── Practice banner ── */
+  #practice-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+  #practice-banner.active { display: flex; }
+  #practice-stop-btn { font-size: 12px; color: var(--danger); background: none; border: 1px solid var(--danger); border-radius: 6px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+
+  /* ── Practice preset buttons ── */
+  .practice-presets { display: flex; gap: 8px; margin-top: 8px; }
+  .preset-btn { flex: 1; padding: 14px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; transition: border-color 0.15s; }
+  .preset-btn:active { border-color: var(--text2); transform: scale(0.97); }
 </style>
 </head>
 <body>
@@ -242,8 +264,15 @@
       </div>
       <div style="display:flex;align-items:center;gap:4px">
         <button class="btn-icon" id="study-delete-btn" onclick="deleteCurrentCard()" style="display:none;font-size:17px" title="Delete card">🗑</button>
+        <button class="btn-icon" onclick="openSearch()" title="Search cards" style="font-size:18px;color:var(--text2)">🔍</button>
+        <button class="btn-icon" onclick="openPracticeModal()" title="Practice session" style="font-size:18px;color:var(--text2)">⚡</button>
         <button id="study-add-btn" onclick="openQuickAdd()">＋ Add word</button>
       </div>
+    </div>
+
+    <div id="practice-banner">
+      <span id="practice-info"></span>
+      <button id="practice-stop-btn" onclick="stopPractice()">Stop practice</button>
     </div>
 
     <div id="direction-row">
@@ -373,6 +402,35 @@
   <div id="add-word-bar">
     <input class="input" id="add-word-input" type="text" placeholder="Type a word, e.g. jump…" autocomplete="off" autocorrect="off" autocapitalize="off">
     <button class="btn btn-primary" id="add-word-btn" onclick="addWordToDeck()">Add</button>
+  </div>
+</div>
+
+<!-- ── Search overlay ── -->
+<div id="search-overlay">
+  <div id="search-header">
+    <button class="btn-icon" onclick="closeSearch()" style="font-size:22px;color:var(--text2)">←</button>
+    <input class="input" id="search-overlay-input" type="search" placeholder="Search German or English…" autocomplete="off" oninput="runSearch(this.value)">
+  </div>
+  <div id="search-results">
+    <div id="search-empty">No cards found</div>
+  </div>
+</div>
+
+<!-- ── Practice modal ── -->
+<div class="modal-overlay" id="practice-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Practice session</h3>
+      <button class="modal-close" onclick="closePracticeModal()">✕</button>
+    </div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Cards you rated Again or Hard are picked first, then never-reviewed, then Good/Excellent.</p>
+    <label class="label">How many cards?</label>
+    <div class="practice-presets">
+      <button class="preset-btn" onclick="startPractice(10)">10</button>
+      <button class="preset-btn" onclick="startPractice(20)">20</button>
+      <button class="preset-btn" onclick="startPractice(50)">50</button>
+      <button class="preset-btn" onclick="startPractice(9999)">All</button>
+    </div>
   </div>
 </div>
 
@@ -531,6 +589,7 @@ let isFlipped     = false;
 let editingCardId = null;
 let currentDeckId = null;
 let chatHistory   = []; // in-memory only, resets per card
+let practiceMode  = false;
 
 // ═══════════════════════════════════════════════════════
 // Navigation
@@ -574,8 +633,10 @@ function initStudy() {
   const s = loadSettings();
   document.getElementById('backup-reminder').style.display =
     s.lastExport && (Date.now() - s.lastExport > 14 * DAY_MS) ? 'block' : 'none';
-  studyQueue = buildStudyQueue();
-  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+  if (!practiceMode) {
+    studyQueue = buildStudyQueue();
+    if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+  }
 }
 
 function showCardState() {
@@ -606,6 +667,97 @@ function showDoneState() {
 function studyAhead() {
   studyQueue = buildStudyQueue(true);
   if (studyQueue.length) { showCardState(); nextCard(); }
+}
+
+// ═══════════════════════════════════════════════════════
+// Practice mode
+// ═══════════════════════════════════════════════════════
+function buildPracticeQueue(n) {
+  const cards = loadCards();
+  function priority(r) {
+    if (r === 0) return 0;   // Again first
+    if (r === 1) return 1;   // Hard
+    if (r == null) return 2; // Never rated
+    if (r === 2) return 3;   // Good
+    return 4;                // Excellent last
+  }
+  return cards.slice().sort((a, b) => {
+    const pd = priority(a.lastRating) - priority(b.lastRating);
+    if (pd !== 0) return pd;
+    return (a.due || 0) - (b.due || 0);
+  }).slice(0, n);
+}
+
+function openPracticeModal() {
+  document.getElementById('practice-modal').classList.add('open');
+}
+function closePracticeModal() {
+  document.getElementById('practice-modal').classList.remove('open');
+}
+function startPractice(n) {
+  closePracticeModal();
+  const queue = buildPracticeQueue(n);
+  if (!queue.length) return;
+  practiceMode = true;
+  studyQueue = queue;
+  const count = queue.length;
+  document.getElementById('practice-info').textContent = `⚡ Practice · ${count} card${count === 1 ? '' : 's'}`;
+  document.getElementById('practice-banner').classList.add('active');
+  showCardState();
+  nextCard();
+}
+function stopPractice() {
+  practiceMode = false;
+  document.getElementById('practice-banner').classList.remove('active');
+  studyQueue = buildStudyQueue();
+  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+}
+
+// ═══════════════════════════════════════════════════════
+// Search overlay
+// ═══════════════════════════════════════════════════════
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  const input = document.getElementById('search-overlay-input');
+  input.value = '';
+  // Remove any dynamic result rows, leave the static #search-empty placeholder
+  const container = document.getElementById('search-results');
+  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
+  document.getElementById('search-empty').style.display = 'none';
+  setTimeout(() => input.focus(), 80);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+}
+function runSearch(query) {
+  const q = query.trim().toLowerCase();
+  const container = document.getElementById('search-results');
+  const emptyEl = document.getElementById('search-empty');
+  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
+  if (!q) { emptyEl.style.display = 'none'; return; }
+
+  const cards = loadCards();
+  const decks = loadDecks();
+  const matches = cards.filter(c =>
+    c.de.toLowerCase().includes(q) || c.en.toLowerCase().includes(q)
+  ).slice(0, 60);
+
+  if (!matches.length) { emptyEl.style.display = ''; return; }
+  emptyEl.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  matches.forEach(card => {
+    const deck = decks.find(d => d.id === card.deckId);
+    const row = document.createElement('div');
+    row.className = 'search-result-row';
+    row.innerHTML = `
+      <div class="search-result-de">${deHtml(card)}</div>
+      <div class="search-result-en">${esc(card.en)}${deck ? ` <span style="color:var(--text3)">· ${esc(deck.name)}</span>` : ''}</div>
+    `;
+    row.addEventListener('click', () => { closeSearch(); previewNewCard(card); });
+    frag.appendChild(row);
+  });
+  container.appendChild(frag);
 }
 
 function nextCard() {
@@ -692,11 +844,15 @@ function rateCard(rating) {
     cards[idx].level = newLevel;
     cards[idx].due = computeDue(newLevel, rating);
     cards[idx].lastReviewed = Date.now();
+    cards[idx].lastRating = rating;
     saveCards(cards);
     if (rating === 0) {
       // Re-insert 3–5 cards ahead so it doesn't come up immediately
       const pos = Math.min(studyQueue.length, Math.floor(Math.random() * 3) + 3);
       studyQueue.splice(pos, 0, { ...cards[idx] });
+    } else if (practiceMode) {
+      // In practice mode, cycle all non-Again cards to end of queue
+      studyQueue.push({ ...cards[idx] });
     }
   }
   document.getElementById('due-count').textContent = loadCards().filter(c => c.due <= endOfToday()).length;
@@ -896,19 +1052,9 @@ async function quickAddSubmit() {
 
   try {
     const results = await callOpenAI(word);
-    const cards = loadCards(), now = Date.now();
-    const newCards = results.map(c => ({
-      id: uid(), deckId,
-      de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
-      word_type: c.word_type, forms: c.forms, grammar: c.grammar,
-      governs: c.governs, alternatives: c.alternatives,
-      collocations: c.collocations, register: c.register, gender: c.gender,
-      level: 0, due: now, lastReviewed: null, added: now
-    }));
-    newCards.forEach(c => cards.push(c));
-    saveCards(cards);
+    const card = processAddedCards(results, deckId);
     closeQuickAdd();
-    previewNewCard(newCards[0]);
+    previewNewCard(card);
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = 'block';
@@ -922,6 +1068,37 @@ document.getElementById('qa-word-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') quickAddSubmit();
 });
 document.getElementById('quick-add-modal').addEventListener('click', function(e) { if (e.target === this) closeQuickAdd(); });
+
+// ═══════════════════════════════════════════════════════
+// Card dedup helper — called after AI returns results
+// Skips adding if both de+en already exist; reschedules existing card instead.
+// ═══════════════════════════════════════════════════════
+function processAddedCards(results, deckId) {
+  const cards = loadCards();
+  const now = Date.now();
+  let firstCard = null;
+  for (const c of results) {
+    const deLow = c.de.toLowerCase(), enLow = c.en.toLowerCase();
+    const existing = cards.find(x => x.de.toLowerCase() === deLow && x.en.toLowerCase() === enLow);
+    if (existing) {
+      existing.due = now;
+      if (!firstCard) firstCard = existing;
+    } else {
+      const newCard = {
+        id: uid(), deckId,
+        de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
+        word_type: c.word_type, forms: c.forms, grammar: c.grammar,
+        governs: c.governs, alternatives: c.alternatives,
+        collocations: c.collocations, register: c.register, gender: c.gender,
+        level: 0, due: now, lastReviewed: null, added: now
+      };
+      cards.push(newCard);
+      if (!firstCard) firstCard = newCard;
+    }
+  }
+  saveCards(cards);
+  return firstCard;
+}
 
 // ═══════════════════════════════════════════════════════
 // OpenAI — shared card generation
@@ -1048,21 +1225,11 @@ async function addWordToDeck() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   try {
     const results = await callOpenAI(word);
-    const cards = loadCards(), now = Date.now();
-    const newCards = results.map(c => ({
-      id: uid(), deckId: currentDeckId,
-      de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
-      word_type: c.word_type, forms: c.forms, grammar: c.grammar,
-      governs: c.governs, alternatives: c.alternatives,
-      collocations: c.collocations, register: c.register, gender: c.gender,
-      level: 0, due: now, lastReviewed: null, added: now
-    }));
-    newCards.forEach(c => cards.push(c));
-    saveCards(cards);
+    const card = processAddedCards(results, currentDeckId);
     document.getElementById('add-word-input').value = '';
     renderDeckCards();
     closeDeckOverlay();
-    previewNewCard(newCards[0]);
+    previewNewCard(card);
   } catch (e) {
     errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
