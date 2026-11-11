@@ -86,7 +86,8 @@
   .card-direction-label { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 8px; align-self: center; }
   .card-deck-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; align-self: center; }
   .card-main { font-size: 28px; font-weight: 700; text-align: center; line-height: 1.25; width: 100%; }
-  .tap-hint { font-size: 12px; color: var(--text3); margin-top: 18px; }
+  .card-front-example { font-size: 13px; color: var(--text2); font-style: italic; margin-top: 14px; text-align: center; line-height: 1.5; }
+  .tap-hint { font-size: 12px; color: var(--text3); margin-top: 12px; }
   .back-answer { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--text); width: 100%; }
 
   /* Grammar line — plain text, no chips */
@@ -258,6 +259,7 @@
             <div class="card-deck-label"      id="card-deck-label"></div>
             <div class="card-direction-label" id="card-dir-label"></div>
             <div class="card-main"            id="card-front-text"></div>
+            <div class="card-front-example"   id="card-front-example"></div>
             <div class="tap-hint">tap to flip</div>
           </div>
           <div class="card-face card-back">
@@ -627,14 +629,17 @@ function showCard(card) {
   const color = genderColor(card);
   const frontEl = document.getElementById('card-front-text');
   const backEl  = document.getElementById('back-answer');
+  const frontExampleEl = document.getElementById('card-front-example');
   if (isDE) {
     frontEl.innerHTML  = color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
     backEl.textContent = card.en;
     backEl.style.color = '';
+    frontExampleEl.textContent = '';
   } else {
     frontEl.textContent = card.en;
     frontEl.style.color = '';
     backEl.innerHTML    = color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
+    frontExampleEl.textContent = card.example_en || '';
   }
 
   document.getElementById('back-example').textContent    = card.example    || '';
