@@ -559,7 +559,9 @@ function setDirection(dir) {
 function buildStudyQueue(all = false) {
   const cards = loadCards();
   let due = all ? cards.slice() : cards.filter(c => c.due <= endOfToday());
-  due.sort((a,b) => a.level !== b.level ? a.level - b.level : Math.random() - 0.5);
+  // Weighted shuffle: lower-level cards tend earlier but aren't strictly first.
+  // A level-0 card scores 0–2, a level-3 card scores 3–5, so they interleave naturally.
+  due.sort((a, b) => (a.level + Math.random() * 2) - (b.level + Math.random() * 2));
   return due;
 }
 
@@ -691,7 +693,11 @@ function rateCard(rating) {
     cards[idx].due = computeDue(newLevel, rating);
     cards[idx].lastReviewed = Date.now();
     saveCards(cards);
-    if (rating === 0) studyQueue.unshift({ ...cards[idx] });
+    if (rating === 0) {
+      // Re-insert 3–5 cards ahead so it doesn't come up immediately
+      const pos = Math.min(studyQueue.length, Math.floor(Math.random() * 3) + 3);
+      studyQueue.splice(pos, 0, { ...cards[idx] });
+    }
   }
   document.getElementById('due-count').textContent = loadCards().filter(c => c.due <= endOfToday()).length;
   nextCard();
