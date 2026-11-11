@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Karten">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Karten</title>
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --surface2: #252540;
+    --surface3: #2e2e50;
+    --accent: #7c6af0;
+    --accent2: #5b4de0;
+    --text: #e8e8f0;
+    --text2: #9999bb;
+    --text3: #6666aa;
+    --danger: #e05b5b;
+    --success: #4caf7d;
+    --warn: #e0a85b;
+    --good: #5b9de0;
+    --radius: 14px;
+    --tab-h: 60px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Tab bar ── */
+  #tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--surface3);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 0 10px;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    background: none;
+    transition: color 0.15s;
+    min-height: var(--tab-h);
+  }
+  .tab .icon { font-size: 20px; }
+  .tab.active { color: var(--accent); }
+
+  /* ── Screens ── */
+  #screens {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .screen {
+    display: none;
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen.active { display: block; }
+
+  /* ── Typography ── */
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+  h3 { font-size: 15px; font-weight: 600; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    min-height: 48px;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary { background: var(--surface3); color: var(--text); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+  .btn-full { width: 100%; }
+
+  /* ── Inputs ── */
+  .input, .textarea, .select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--surface3);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+  .input:focus, .textarea:focus, .select:focus { border-color: var(--accent); }
+  .textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+  .label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+  .field { margin-bottom: 14px; }
+  .select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%239999bb'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  /* ── Cards ── */
+  .card-surface {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* ── Study screen ── */
+  #study-header {
+    text-align: center;
+    color: var(--text2);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  #study-header .count { font-weight: 700; color: var(--text); }
+  #backup-reminder {
+    background: var(--surface2);
+    border: 1px solid var(--warn);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--warn);
+    margin-bottom: 12px;
+    display: none;
+  }
+  #flashcard-wrap {
+    perspective: 1000px;
+    margin: 0 auto 20px;
+    max-width: 480px;
+  }
+  #flashcard {
+    position: relative;
+    min-height: 220px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease;
+    border-radius: var(--radius);
+  }
+  #flashcard.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--surface);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    min-height: 220px;
+  }
+  .card-back { transform: rotateY(180deg); justify-content: flex-start; align-items: flex-start; }
+  .card-direction-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    align-self: center;
+  }
+  .card-main {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    width: 100%;
+  }
+  .card-sub { font-size: 14px; color: var(--text2); margin-top: 8px; text-align: center; }
+  .tap-hint { font-size: 12px; color: var(--text3); margin-top: 16px; }
+  .back-answer { font-size: 24px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+  .back-example { font-size: 15px; color: var(--text2); margin-bottom: 4px; font-style: italic; }
+  .back-example-en { font-size: 14px; color: var(--text3); margin-bottom: 10px; }
+  .back-note {
+    font-size: 13px;
+    color: var(--accent);
+    background: rgba(124,106,240,0.12);
+    border-radius: 8px;
+    padding: 7px 10px;
+    margin-top: 4px;
+    width: 100%;
+  }
+  #rating-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    max-width: 480px;
+    margin: 0 auto 16px;
+  }
+  .rating-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    min-height: 58px;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .rating-btn:active { transform: scale(0.96); }
+  .rating-btn .interval { font-size: 11px; font-weight: 400; opacity: 0.75; margin-top: 3px; }
+  .rb-again { background: var(--danger); color: #fff; }
+  .rb-hard  { background: var(--warn); color: #fff; }
+  .rb-good  { background: var(--good); color: #fff; }
+  .rb-excel { background: var(--success); color: #fff; }
+
+  #done-state {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #done-state .big-emoji { font-size: 52px; margin-bottom: 16px; }
+  #done-state h2 { margin-bottom: 8px; }
+  #done-state p { color: var(--text2); margin-bottom: 24px; }
+
+  /* ── New screen ── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .chip {
+    padding: 7px 13px;
+    background: var(--surface2);
+    border: 1px solid var(--surface3);
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text2);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .chip:active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #gen-row { display: flex; gap: 10px; align-items: flex-end; }
+  #gen-row .field { flex: 1; margin-bottom: 0; }
+  #count-wrap { display: flex; flex-direction: column; gap: 6px; }
+  #count-wrap .label { text-align: center; }
+  #count-input { width: 70px; text-align: center; }
+  #preview-section { margin-top: 16px; }
+  #preview-list { margin-bottom: 14px; }
+  .preview-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .preview-card-info { flex: 1; }
+  .preview-de { font-weight: 700; font-size: 15px; }
+  .preview-en { color: var(--text2); font-size: 13px; margin: 2px 0; }
+  .preview-note { color: var(--accent); font-size: 12px; }
+  .preview-remove { background: none; border: none; color: var(--danger); font-size: 20px; cursor: pointer; padding: 0 4px; min-width: 32px; min-height: 32px; display: flex; align-items: center; justify-content: center; }
+  #preview-actions { display: flex; gap: 10px; }
+  .error-box {
+    background: rgba(224,91,91,0.12);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    color: var(--danger);
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+  .success-box {
+    background: rgba(76,175,125,0.12);
+    border: 1px solid var(--success);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    color: var(--success);
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* Manual add */
+  #manual-add { margin-top: 24px; }
+  #manual-add details { }
+  #manual-add summary {
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 14px;
+    padding: 10px 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #manual-add summary::before { content: '▸'; transition: transform 0.2s; }
+  #manual-add details[open] summary::before { transform: rotate(90deg); }
+  #manual-add summary::-webkit-details-marker { display: none; }
+  #manual-form { padding-top: 10px; }
+
+  /* ── Cards list screen ── */
+  #cards-search { margin-bottom: 12px; }
+  #cards-list { }
+  .card-row {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .card-row:active { background: var(--surface2); }
+  .card-row-info { flex: 1; min-width: 0; }
+  .card-row-de { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-row-en { color: var(--text2); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-row-meta { font-size: 11px; color: var(--text3); display: flex; gap: 8px; margin-top: 2px; }
+  .card-row-del { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px 8px; min-height: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center; }
+  .card-row-del:active { color: var(--danger); }
+  #no-cards { text-align: center; color: var(--text3); padding: 40px 0; font-size: 15px; }
+
+  /* Edit modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius) var(--radius) 0 0;
+    width: 100%;
+    max-width: 540px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 20px 16px 32px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .modal-close { background: none; border: none; color: var(--text2); font-size: 24px; cursor: pointer; min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+
+  /* ── Settings screen ── */
+  .settings-section { margin-bottom: 24px; }
+  .settings-section h3 { color: var(--text2); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .settings-row {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .settings-row label { flex: 1; }
+  .settings-row .label { margin-bottom: 0; font-size: 14px; color: var(--text); }
+  .settings-row .sublabel { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .settings-info { font-size: 13px; color: var(--text3); margin-top: 6px; }
+  .settings-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Loading spinner */
+  .spinner {
+    width: 22px; height: 22px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Direction toggle */
+  #direction-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dir-btn {
+    flex: 1;
+    padding: 8px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--surface3);
+    border-radius: 10px;
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .dir-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Number stepper */
+  .stepper { display: flex; align-items: center; gap: 0; }
+  .stepper-btn { background: var(--surface3); border: none; color: var(--text); width: 38px; height: 44px; font-size: 20px; cursor: pointer; border-radius: var(--radius) 0 0 var(--radius); display: flex; align-items: center; justify-content: center; }
+  .stepper-btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .stepper input { width: 60px; height: 44px; text-align: center; border-radius: 0; border-left: none; border-right: none; }
+
+  /* Level badge */
+  .level-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--surface3);
+    color: var(--text2);
+  }
+  .level-0 { background: rgba(224,91,91,0.2); color: var(--danger); }
+  .level-1, .level-2 { background: rgba(224,168,91,0.2); color: var(--warn); }
+  .level-3, .level-4 { background: rgba(91,157,224,0.2); color: var(--good); }
+  .level-5, .level-6 { background: rgba(76,175,125,0.2); color: var(--success); }
+</style>
+</head>
+<body>
+
+<!-- Tab bar -->
+<nav id="tabs">
+  <button class="tab active" data-screen="study" onclick="showScreen('study')">
+    <span class="icon">📚</span>Study
+  </button>
+  <button class="tab" data-screen="new" onclick="showScreen('new')">
+    <span class="icon">✨</span>New
+  </button>
+  <button class="tab" data-screen="cards" onclick="showScreen('cards')">
+    <span class="icon">🗂</span>Cards
+  </button>
+  <button class="tab" data-screen="settings" onclick="showScreen('settings')">
+    <span class="icon">⚙️</span>Settings
+  </button>
+</nav>
+
+<!-- Screens -->
+<div id="screens">
+
+  <!-- Study -->
+  <section id="screen-study" class="screen active">
+    <div id="backup-reminder">⏰ Last backup was over 14 days ago — consider exporting your cards.</div>
+    <div id="study-header">
+      <span class="count" id="due-count">0</span> due today &nbsp;·&nbsp;
+      <span class="count" id="total-count">0</span> total
+    </div>
+    <div id="direction-row">
+      <button class="dir-btn" data-dir="de-en" onclick="setDirection('de-en')">DE → EN</button>
+      <button class="dir-btn" data-dir="en-de" onclick="setDirection('en-de')">EN → DE</button>
+      <button class="dir-btn" data-dir="mixed" onclick="setDirection('mixed')">Mixed</button>
+    </div>
+
+    <div id="card-state">
+      <div id="flashcard-wrap">
+        <div id="flashcard" onclick="flipCard()">
+          <div class="card-face card-front" id="card-front">
+            <div class="card-direction-label" id="card-dir-label"></div>
+            <div class="card-main" id="card-front-text"></div>
+            <div class="tap-hint">tap to flip</div>
+          </div>
+          <div class="card-face card-back" id="card-back">
+            <div class="card-direction-label" id="card-back-dir-label"></div>
+            <div class="back-answer" id="back-answer"></div>
+            <div class="back-example" id="back-example"></div>
+            <div class="back-example-en" id="back-example-en"></div>
+            <div class="back-note" id="back-note" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+      <div id="rating-row" style="display:none">
+        <button class="rating-btn rb-again" onclick="rateCard(0)">
+          Again<span class="interval" id="int-again"></span>
+        </button>
+        <button class="rating-btn rb-hard" onclick="rateCard(1)">
+          Hard<span class="interval" id="int-hard"></span>
+        </button>
+        <button class="rating-btn rb-good" onclick="rateCard(2)">
+          Good<span class="interval" id="int-good"></span>
+        </button>
+        <button class="rating-btn rb-excel" onclick="rateCard(3)">
+          Excellent<span class="interval" id="int-excel"></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="done-state" style="display:none">
+      <div class="big-emoji">🎉</div>
+      <h2>Done for today!</h2>
+      <p>All due cards reviewed.</p>
+      <button class="btn btn-secondary" onclick="studyAhead()">Study ahead anyway</button>
+    </div>
+  </section>
+
+  <!-- New -->
+  <section id="screen-new" class="screen">
+    <h2>Add Cards</h2>
+    <div class="field">
+      <label class="label">What to generate</label>
+      <input class="input" id="gen-topic" type="text" placeholder="e.g. B1 travel verbs, separable verbs…">
+    </div>
+    <div class="chips" id="chips-row"></div>
+    <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;">
+      <div class="field" style="flex:1;margin-bottom:0">
+        <label class="label">How many</label>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="adjustCount(-5)">−</button>
+          <input class="input" id="count-input" type="number" min="1" max="30" value="10">
+          <button class="stepper-btn" onclick="adjustCount(5)">+</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="gen-btn" onclick="generateCards()" style="margin-bottom:0;min-width:120px">Generate</button>
+    </div>
+    <div id="gen-error" class="error-box"></div>
+    <div id="preview-section" style="display:none">
+      <h3 style="margin-bottom:10px">Preview <span id="preview-count"></span></h3>
+      <div id="preview-list"></div>
+      <div id="preview-actions">
+        <button class="btn btn-primary" onclick="saveAll()">Save all</button>
+        <button class="btn btn-secondary" onclick="discardAll()">Discard</button>
+      </div>
+    </div>
+
+    <div id="manual-add">
+      <details>
+        <summary>Add card manually</summary>
+        <div id="manual-form">
+          <div class="field">
+            <label class="label">German</label>
+            <input class="input" id="m-de" type="text" placeholder="der Tisch, -e">
+          </div>
+          <div class="field">
+            <label class="label">English</label>
+            <input class="input" id="m-en" type="text" placeholder="table">
+          </div>
+          <div class="field">
+            <label class="label">Example sentence (German)</label>
+            <input class="input" id="m-ex" type="text" placeholder="optional">
+          </div>
+          <div class="field">
+            <label class="label">Example translation</label>
+            <input class="input" id="m-ex-en" type="text" placeholder="optional">
+          </div>
+          <div class="field">
+            <label class="label">Note / tip</label>
+            <input class="input" id="m-note" type="text" placeholder="optional">
+          </div>
+          <button class="btn btn-primary btn-full" onclick="saveManual()">Add card</button>
+          <div id="manual-success" class="success-box">Card added!</div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section id="screen-cards" class="screen">
+    <h2>All Cards</h2>
+    <div class="field" id="cards-search">
+      <input class="input" id="search-input" type="search" placeholder="Search German or English…" oninput="renderCardsList()">
+    </div>
+    <div id="cards-list"></div>
+    <div id="no-cards" style="display:none">No cards yet.</div>
+  </section>
+
+  <!-- Settings -->
+  <section id="screen-settings" class="screen">
+    <h2>Settings</h2>
+
+    <div class="settings-section">
+      <h3>OpenAI</h3>
+      <div class="field">
+        <label class="label">API Key</label>
+        <input class="input" id="api-key" type="password" placeholder="sk-…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="label">Model</label>
+        <input class="input" id="model-name" type="text" value="gpt-4.1-mini">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>About you</h3>
+      <div class="field">
+        <label class="label">Extra instructions for card generation</label>
+        <textarea class="textarea" id="extra-instructions" placeholder="e.g. I'm around B1. Always include article and plural for nouns."></textarea>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Data</h3>
+      <div class="settings-actions">
+        <button class="btn btn-secondary" onclick="exportCards()">⬇ Export backup</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">⬆ Import backup</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importCards(event)">
+      </div>
+      <div class="settings-info" id="last-export-info"></div>
+      <div id="import-result" class="success-box" style="margin-top:10px"></div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Danger zone</h3>
+      <button class="btn btn-danger btn-sm" onclick="clearAllCards()">Delete all cards</button>
+    </div>
+
+    <div class="settings-info" style="margin-top:16px;text-align:center">Karten · data stored locally on this device</div>
+  </section>
+</div>
+
+<!-- Edit modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit card</h3>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="field">
+      <label class="label">German</label>
+      <input class="input" id="edit-de" type="text">
+    </div>
+    <div class="field">
+      <label class="label">English</label>
+      <input class="input" id="edit-en" type="text">
+    </div>
+    <div class="field">
+      <label class="label">Example (German)</label>
+      <input class="input" id="edit-ex" type="text">
+    </div>
+    <div class="field">
+      <label class="label">Example (English)</label>
+      <input class="input" id="edit-ex-en" type="text">
+    </div>
+    <div class="field">
+      <label class="label">Note</label>
+      <input class="input" id="edit-note" type="text">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveEdit()">Save</button>
+      <button class="btn btn-secondary" onclick="resetProgress()">Reset progress</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// Constants
+// ═══════════════════════════════════════════════════════
+const INTERVALS = [0, 1, 3, 7, 14, 30, 60]; // days per level
+const DAY_MS = 86400000;
+const MIN_MS = 60000;
+
+const CHIPS = [
+  'easy', 'difficult', 'B1 everyday verbs', 'B2 idioms',
+  'separable verbs', 'Dativ vs Akkusativ', 'work / office', 'false friends'
+];
+
+const SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['cards'],
+  properties: {
+    cards: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['de','en','example','example_en','note'],
+        properties: {
+          de: { type: 'string' },
+          en: { type: 'string' },
+          example: { type: 'string' },
+          example_en: { type: 'string' },
+          note: { type: 'string' }
+        }
+      }
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// Storage helpers
+// ═══════════════════════════════════════════════════════
+function loadCards() {
+  try { return JSON.parse(localStorage.getItem('cards') || '[]'); }
+  catch { return []; }
+}
+function saveCards(arr) { localStorage.setItem('cards', JSON.stringify(arr)); }
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem('settings') || '{}'); }
+  catch { return {}; }
+}
+function saveSettings(s) { localStorage.setItem('settings', JSON.stringify(s)); }
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// ═══════════════════════════════════════════════════════
+// SRS helpers
+// ═══════════════════════════════════════════════════════
+function endOfToday() {
+  const d = new Date(); d.setHours(23,59,59,999); return d.getTime();
+}
+
+function computeNextLevel(currentLevel, rating) {
+  // rating: 0=Again, 1=Hard, 2=Good, 3=Excellent
+  if (rating === 0) return 0;
+  if (rating === 1) return Math.max(1, currentLevel);
+  if (rating === 2) return Math.min(6, currentLevel + 1);
+  return Math.min(6, currentLevel + 2);
+}
+
+function computeDue(newLevel, rating) {
+  if (rating === 0) return Date.now() + MIN_MS;
+  return Date.now() + INTERVALS[newLevel] * DAY_MS;
+}
+
+function intervalLabel(newLevel, rating) {
+  if (rating === 0) return '1 min';
+  const d = INTERVALS[newLevel];
+  if (d === 0) return 'now';
+  if (d === 1) return '1 d';
+  return `${d} d`;
+}
+
+// ═══════════════════════════════════════════════════════
+// App state
+// ═══════════════════════════════════════════════════════
+let currentCard = null;
+let studyQueue = [];
+let isFlipped = false;
+let editingCardId = null;
+let previewCards = []; // cards pending save
+
+// ═══════════════════════════════════════════════════════
+// Navigation
+// ═══════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelector(`.tab[data-screen="${name}"]`).classList.add('active');
+  if (name === 'study') initStudy();
+  if (name === 'cards') renderCardsList();
+  if (name === 'settings') loadSettingsUI();
+}
+
+// ═══════════════════════════════════════════════════════
+// Study screen
+// ═══════════════════════════════════════════════════════
+function getDirection() {
+  const s = loadSettings();
+  return s.direction || 'de-en';
+}
+function setDirection(dir) {
+  const s = loadSettings(); s.direction = dir; saveSettings(s);
+  document.querySelectorAll('.dir-btn').forEach(b => b.classList.toggle('active', b.dataset.dir === dir));
+  if (currentCard) showCard(currentCard);
+}
+
+function buildStudyQueue(all = false) {
+  const cards = loadCards();
+  const eod = endOfToday();
+  let due = all ? cards.slice() : cards.filter(c => c.due <= eod);
+  // sort: level ascending, random within same level
+  due.sort((a, b) => a.level !== b.level ? a.level - b.level : Math.random() - 0.5);
+  return due;
+}
+
+function initStudy() {
+  const cards = loadCards();
+  const eod = endOfToday();
+  const dueCount = cards.filter(c => c.due <= eod).length;
+  document.getElementById('due-count').textContent = dueCount;
+  document.getElementById('total-count').textContent = cards.length;
+
+  const dir = getDirection();
+  document.querySelectorAll('.dir-btn').forEach(b => b.classList.toggle('active', b.dataset.dir === dir));
+
+  // backup reminder
+  const s = loadSettings();
+  const rem = document.getElementById('backup-reminder');
+  if (s.lastExport && (Date.now() - s.lastExport > 14 * DAY_MS)) {
+    rem.style.display = 'block';
+  } else {
+    rem.style.display = 'none';
+  }
+
+  studyQueue = buildStudyQueue();
+  if (studyQueue.length === 0) {
+    showDoneState();
+  } else {
+    showCardState();
+    nextCard();
+  }
+}
+
+function showCardState() {
+  document.getElementById('card-state').style.display = '';
+  document.getElementById('done-state').style.display = 'none';
+}
+function showDoneState() {
+  document.getElementById('card-state').style.display = 'none';
+  document.getElementById('done-state').style.display = '';
+}
+function studyAhead() {
+  studyQueue = buildStudyQueue(true);
+  if (studyQueue.length === 0) return;
+  showCardState();
+  nextCard();
+}
+
+function nextCard() {
+  if (studyQueue.length === 0) { showDoneState(); return; }
+  currentCard = studyQueue.shift();
+  showCard(currentCard);
+}
+
+function showCard(card) {
+  isFlipped = false;
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+
+  const dir = getDirection();
+  const isDE = dir === 'de-en' || (dir === 'mixed' && Math.random() < 0.5);
+  card._showDE = isDE;
+
+  document.getElementById('card-dir-label').textContent = isDE ? 'German' : 'English';
+  document.getElementById('card-front-text').textContent = isDE ? card.de : card.en;
+
+  document.getElementById('card-back-dir-label').textContent = isDE ? 'English' : 'German';
+  document.getElementById('back-answer').textContent = isDE ? card.en : card.de;
+  document.getElementById('back-example').textContent = card.example || '';
+  document.getElementById('back-example-en').textContent = card.example_en || '';
+  const noteEl = document.getElementById('back-note');
+  if (card.note) { noteEl.textContent = '💡 ' + card.note; noteEl.style.display = ''; }
+  else noteEl.style.display = 'none';
+
+  document.getElementById('rating-row').style.display = 'none';
+
+  // precompute interval labels
+  const lvl = card.level;
+  document.getElementById('int-again').textContent = intervalLabel(0, 0);
+  document.getElementById('int-hard').textContent  = intervalLabel(computeNextLevel(lvl,1), 1);
+  document.getElementById('int-good').textContent  = intervalLabel(computeNextLevel(lvl,2), 2);
+  document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl,3), 3);
+}
+
+function flipCard() {
+  if (!currentCard) return;
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+  document.getElementById('rating-row').style.display = isFlipped ? 'grid' : 'none';
+}
+
+function rateCard(rating) {
+  if (!currentCard) return;
+  const cards = loadCards();
+  const idx = cards.findIndex(c => c.id === currentCard.id);
+  if (idx === -1) { nextCard(); return; }
+
+  const newLevel = computeNextLevel(currentCard.level, rating);
+  const due = computeDue(newLevel, rating);
+  cards[idx].level = newLevel;
+  cards[idx].due = due;
+  cards[idx].lastReviewed = Date.now();
+  saveCards(cards);
+
+  // update header counts
+  const eod = endOfToday();
+  const dueCount = cards.filter(c => c.due <= eod).length;
+  document.getElementById('due-count').textContent = dueCount;
+  document.getElementById('total-count').textContent = cards.length;
+
+  // if Again, push back into queue near front
+  if (rating === 0) {
+    studyQueue.unshift({ ...cards[idx] });
+  }
+  nextCard();
+}
+
+// ═══════════════════════════════════════════════════════
+// New cards screen
+// ═══════════════════════════════════════════════════════
+function initChips() {
+  const row = document.getElementById('chips-row');
+  row.innerHTML = '';
+  CHIPS.forEach(chip => {
+    const el = document.createElement('button');
+    el.className = 'chip';
+    el.textContent = chip;
+    el.onclick = () => { document.getElementById('gen-topic').value = chip; };
+    row.appendChild(el);
+  });
+}
+
+function adjustCount(delta) {
+  const inp = document.getElementById('count-input');
+  let v = parseInt(inp.value, 10) || 10;
+  v = Math.max(1, Math.min(30, v + delta));
+  inp.value = v;
+}
+
+async function generateCards() {
+  const s = loadSettings();
+  const topic = document.getElementById('gen-topic').value.trim();
+  const countVal = parseInt(document.getElementById('count-input').value, 10) || 10;
+  const count = Math.max(1, Math.min(30, countVal));
+  const errBox = document.getElementById('gen-error');
+  errBox.style.display = 'none';
+
+  if (!s.apiKey) {
+    errBox.textContent = 'No API key set — go to Settings and add your OpenAI API key.';
+    errBox.style.display = 'block'; return;
+  }
+  if (!topic) {
+    errBox.textContent = 'Enter a topic first.';
+    errBox.style.display = 'block'; return;
+  }
+  if (!navigator.onLine) {
+    errBox.textContent = "You're offline — generating needs internet.";
+    errBox.style.display = 'block'; return;
+  }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  const existingDE = loadCards().slice(-300).map(c => c.de);
+
+  const systemPrompt = [
+    'You make German flashcards for an English speaker.',
+    `Return exactly ${count} cards.`,
+    'Nouns must include the article and plural form (e.g. "der Tisch, -e").',
+    'Verbs: note irregular or separable forms in `note` where useful.',
+    'Interpret short requests sensibly: "easy" ≈ A2, "difficult" ≈ C1.',
+    existingDE.length ? `Do NOT repeat these already-known words: ${existingDE.join(', ')}` : '',
+    s.extraInstructions ? `Extra instructions: ${s.extraInstructions}` : ''
+  ].filter(Boolean).join('\n');
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` },
+      body: JSON.stringify({
+        model: s.model || 'gpt-4.1-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: topic }
+        ],
+        response_format: {
+          type: 'json_schema',
+          json_schema: { name: 'flashcards', strict: true, schema: SCHEMA }
+        }
+      })
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data?.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const choice = data.choices?.[0];
+    if (choice?.message?.refusal) throw new Error('Model refused: ' + choice.message.refusal);
+
+    const parsed = JSON.parse(choice.message.content);
+    previewCards = parsed.cards;
+    showPreview();
+  } catch (e) {
+    errBox.textContent = 'Error: ' + e.message;
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate';
+  }
+}
+
+function showPreview() {
+  const section = document.getElementById('preview-section');
+  const list = document.getElementById('preview-list');
+  section.style.display = '';
+  document.getElementById('preview-count').textContent = `(${previewCards.length})`;
+  list.innerHTML = '';
+  previewCards.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'preview-card';
+    div.id = 'prev-' + i;
+    div.innerHTML = `
+      <div class="preview-card-info">
+        <div class="preview-de">${esc(c.de)}</div>
+        <div class="preview-en">${esc(c.en)}</div>
+        ${c.note ? `<div class="preview-note">💡 ${esc(c.note)}</div>` : ''}
+      </div>
+      <button class="preview-remove" onclick="removePreview(${i})" title="Remove">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function removePreview(i) {
+  previewCards[i] = null;
+  const el = document.getElementById('prev-' + i);
+  if (el) el.remove();
+  const remaining = previewCards.filter(Boolean).length;
+  document.getElementById('preview-count').textContent = `(${remaining})`;
+}
+
+function saveAll() {
+  const cards = loadCards();
+  const now = Date.now();
+  previewCards.filter(Boolean).forEach(c => {
+    cards.push({ id: uid(), de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note, level: 0, due: now, lastReviewed: null, added: now });
+  });
+  saveCards(cards);
+  discardAll();
+  showScreen('study');
+}
+
+function discardAll() {
+  previewCards = [];
+  document.getElementById('preview-section').style.display = 'none';
+  document.getElementById('preview-list').innerHTML = '';
+  document.getElementById('gen-error').style.display = 'none';
+}
+
+function saveManual() {
+  const de = document.getElementById('m-de').value.trim();
+  const en = document.getElementById('m-en').value.trim();
+  if (!de || !en) return;
+  const cards = loadCards();
+  const now = Date.now();
+  cards.push({ id: uid(), de, en, example: document.getElementById('m-ex').value.trim(), example_en: document.getElementById('m-ex-en').value.trim(), note: document.getElementById('m-note').value.trim(), level: 0, due: now, lastReviewed: null, added: now });
+  saveCards(cards);
+  ['m-de','m-en','m-ex','m-ex-en','m-note'].forEach(id => document.getElementById(id).value = '');
+  const s = document.getElementById('manual-success');
+  s.style.display = 'block';
+  setTimeout(() => { s.style.display = 'none'; }, 2000);
+}
+
+// ═══════════════════════════════════════════════════════
+// Cards list
+// ═══════════════════════════════════════════════════════
+function renderCardsList() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const cards = loadCards();
+  const list = document.getElementById('cards-list');
+  const noCards = document.getElementById('no-cards');
+  let filtered = cards.slice().reverse();
+  if (q) filtered = filtered.filter(c => c.de.toLowerCase().includes(q) || c.en.toLowerCase().includes(q));
+  list.innerHTML = '';
+  if (filtered.length === 0) { noCards.style.display = ''; return; }
+  noCards.style.display = 'none';
+  filtered.forEach(card => {
+    const due = new Date(card.due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const div = document.createElement('div');
+    div.className = 'card-row';
+    div.innerHTML = `
+      <div class="card-row-info">
+        <div class="card-row-de">${esc(card.de)}</div>
+        <div class="card-row-en">${esc(card.en)}</div>
+        <div class="card-row-meta">
+          <span class="level-badge level-${card.level}">L${card.level}</span>
+          <span>due ${due}</span>
+        </div>
+      </div>
+      <button class="card-row-del" onclick="deleteCard(event,'${card.id}')">🗑</button>
+    `;
+    div.addEventListener('click', (e) => { if (!e.target.closest('.card-row-del')) openEditModal(card.id); });
+    list.appendChild(div);
+  });
+}
+
+function deleteCard(e, id) {
+  e.stopPropagation();
+  if (!confirm('Delete this card?')) return;
+  let cards = loadCards();
+  cards = cards.filter(c => c.id !== id);
+  saveCards(cards);
+  renderCardsList();
+}
+
+// ═══════════════════════════════════════════════════════
+// Edit modal
+// ═══════════════════════════════════════════════════════
+function openEditModal(id) {
+  const cards = loadCards();
+  const card = cards.find(c => c.id === id);
+  if (!card) return;
+  editingCardId = id;
+  document.getElementById('edit-de').value = card.de;
+  document.getElementById('edit-en').value = card.en;
+  document.getElementById('edit-ex').value = card.example;
+  document.getElementById('edit-ex-en').value = card.example_en;
+  document.getElementById('edit-note').value = card.note;
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingCardId = null;
+}
+function saveEdit() {
+  const cards = loadCards();
+  const idx = cards.findIndex(c => c.id === editingCardId);
+  if (idx === -1) { closeEditModal(); return; }
+  cards[idx].de = document.getElementById('edit-de').value.trim();
+  cards[idx].en = document.getElementById('edit-en').value.trim();
+  cards[idx].example = document.getElementById('edit-ex').value.trim();
+  cards[idx].example_en = document.getElementById('edit-ex-en').value.trim();
+  cards[idx].note = document.getElementById('edit-note').value.trim();
+  saveCards(cards);
+  closeEditModal();
+  renderCardsList();
+}
+function resetProgress() {
+  const cards = loadCards();
+  const idx = cards.findIndex(c => c.id === editingCardId);
+  if (idx === -1) { closeEditModal(); return; }
+  cards[idx].level = 0;
+  cards[idx].due = Date.now();
+  cards[idx].lastReviewed = null;
+  saveCards(cards);
+  closeEditModal();
+  renderCardsList();
+}
+
+// ═══════════════════════════════════════════════════════
+// Settings
+// ═══════════════════════════════════════════════════════
+function loadSettingsUI() {
+  const s = loadSettings();
+  document.getElementById('api-key').value = s.apiKey || '';
+  document.getElementById('model-name').value = s.model || 'gpt-4.1-mini';
+  document.getElementById('extra-instructions').value = s.extraInstructions || '';
+  const info = document.getElementById('last-export-info');
+  if (s.lastExport) {
+    const d = new Date(s.lastExport).toLocaleDateString();
+    info.textContent = `Last exported: ${d}`;
+  } else {
+    info.textContent = 'No backup yet.';
+  }
+}
+
+function saveSettingsFromUI() {
+  const s = loadSettings();
+  s.apiKey = document.getElementById('api-key').value.trim();
+  s.model = document.getElementById('model-name').value.trim() || 'gpt-4.1-mini';
+  s.extraInstructions = document.getElementById('extra-instructions').value.trim();
+  saveSettings(s);
+}
+
+function exportCards() {
+  saveSettingsFromUI();
+  const cards = loadCards();
+  const blob = new Blob([JSON.stringify(cards, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `karten-backup-${today}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  const s = loadSettings(); s.lastExport = Date.now(); saveSettings(s);
+  loadSettingsUI();
+}
+
+function importCards(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Not a valid backup file');
+      const existing = loadCards();
+      const existingIds = new Set(existing.map(c => c.id));
+      const added = imported.filter(c => c.id && !existingIds.has(c.id));
+      saveCards([...existing, ...added]);
+      const res = document.getElementById('import-result');
+      res.textContent = `Imported ${added.length} new card(s). (${imported.length - added.length} duplicates skipped.)`;
+      res.style.display = 'block';
+      setTimeout(() => { res.style.display = 'none'; }, 4000);
+    } catch (err) {
+      alert('Import failed: ' + err.message);
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function clearAllCards() {
+  if (!confirm('Delete ALL cards? This cannot be undone.')) return;
+  if (!confirm('Are you sure? All progress will be lost.')) return;
+  saveCards([]);
+  alert('All cards deleted.');
+}
+
+// ═══════════════════════════════════════════════════════
+// Auto-save settings on input blur
+// ═══════════════════════════════════════════════════════
+['api-key','model-name','extra-instructions'].forEach(id => {
+  document.getElementById(id)?.addEventListener('blur', saveSettingsFromUI);
+});
+
+// ═══════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Close modal on overlay click
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditModal();
+});
+
+// ═══════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════
+(async function init() {
+  if ('storage' in navigator && 'persist' in navigator.storage) {
+    await navigator.storage.persist();
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+  initChips();
+  initStudy();
+})();
+</script>
+</body>
+</html>
