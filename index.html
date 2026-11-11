@@ -407,7 +407,7 @@ const CARD_SCHEMA = {
       type: 'array',
       items: {
         type: 'object', additionalProperties: false,
-        required: ['de','en','example','example_en','note','word_type','forms','grammar','governs','alternatives','collocations','register'],
+        required: ['de','en','example','example_en','note','word_type','forms','grammar','governs','alternatives','collocations','register','gender'],
         properties: {
           de:           { type: 'string' },
           en:           { type: 'string' },
@@ -420,7 +420,8 @@ const CARD_SCHEMA = {
           governs:      { type: 'string' },
           alternatives: { type: 'string' },
           collocations: { type: 'string' },
-          register:     { type: 'string', enum: ['casual','neutral','formal'] }
+          register:     { type: 'string', enum: ['casual','neutral','formal'] },
+          gender:       { type: 'string', enum: ['m','f','n',''] }
         }
       }
     }
@@ -447,6 +448,7 @@ Field rules:
 - alternatives: if the English word has other common German equivalents, explain them in one line, e.g. "hüpfen = hop/skip (small repeated jumps)"; "" if none.
 - collocations: 1–2 common collocations separated by "; "; "" if none.
 - register: "casual", "neutral", or "formal".
+- gender: "m" for der-nouns, "f" for die-nouns (singular), "n" for das-nouns; "" for non-nouns and plural-only nouns (e.g. "die Leute" → "").
 - note: one short tip about irregular behaviour, common mistakes, or usage nuance; "" if nothing essential.
 
 If the input has several German equivalents, pick the most common for "de" and list others in "alternatives".
@@ -556,10 +558,21 @@ function showCard(card) {
   const decks = loadDecks();
   const deck = decks.find(d => d.id === card.deckId);
   document.getElementById('card-deck-label').textContent      = deck ? deck.name : '';
-  document.getElementById('card-dir-label').textContent       = isDE ? 'German' : 'English';
-  document.getElementById('card-front-text').textContent      = isDE ? card.de  : card.en;
-  document.getElementById('card-back-dir-label').textContent  = isDE ? 'English' : 'German';
-  document.getElementById('back-answer').textContent          = isDE ? card.en  : card.de;
+  const color = genderColor(card);
+  document.getElementById('card-dir-label').textContent      = isDE ? 'German' : 'English';
+  document.getElementById('card-back-dir-label').textContent = isDE ? 'English' : 'German';
+
+  const frontEl = document.getElementById('card-front-text');
+  const backEl  = document.getElementById('back-answer');
+  if (isDE) {
+    frontEl.innerHTML  = color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
+    backEl.textContent = card.en;
+    backEl.style.color = '';
+  } else {
+    frontEl.textContent = card.en;
+    frontEl.style.color = '';
+    backEl.innerHTML    = color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
+  }
   document.getElementById('back-example').textContent         = card.example    || '';
   document.getElementById('back-example-en').textContent      = card.example_en || '';
 
@@ -769,7 +782,7 @@ function renderDeckCards() {
     div.className = 'deck-card-row';
     div.innerHTML = `
       <div class="deck-card-info">
-        <div class="deck-card-de">${esc(card.de)}</div>
+        <div class="deck-card-de">${deHtml(card)}</div>
         <div class="deck-card-en">${esc(card.en)}</div>
       </div>
       <span class="level-badge level-${card.level}">L${card.level}</span>
@@ -806,7 +819,7 @@ async function addWordToDeck() {
       de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
       word_type: c.word_type, forms: c.forms, grammar: c.grammar,
       governs: c.governs, alternatives: c.alternatives,
-      collocations: c.collocations, register: c.register,
+      collocations: c.collocations, register: c.register, gender: c.gender,
       level: 0, due: now, lastReviewed: null, added: now
     });
     saveCards(cards);
@@ -840,7 +853,7 @@ function renderCardsList() {
     div.className = 'card-row';
     div.innerHTML = `
       <div class="card-row-info">
-        <div class="card-row-de">${esc(card.de)}</div>
+        <div class="card-row-de">${deHtml(card)}</div>
         <div class="card-row-en">${esc(card.en)}</div>
         <div class="card-row-meta">
           <span class="level-badge level-${card.level}">L${card.level}</span>
@@ -949,6 +962,7 @@ async function enrichCard() {
     cards[idx].alternatives = c.alternatives;
     cards[idx].collocations = c.collocations;
     cards[idx].register     = c.register;
+    cards[idx].gender       = c.gender;
     // Optionally update core fields too if they were empty
     if (!cards[idx].example)    cards[idx].example    = c.example;
     if (!cards[idx].example_en) cards[idx].example_en = c.example_en;
@@ -1035,6 +1049,23 @@ function clearAllData() {
 // ═══════════════════════════════════════════════════════
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const GENDER_COLORS = { m: '#4A90E2', f: '#E5484D', n: '#30A46C' };
+
+function genderColor(card) {
+  if (card.gender) return GENDER_COLORS[card.gender] || null;
+  // Fallback for old cards: detect leading article
+  const lower = (card.de || '').toLowerCase();
+  if (lower.startsWith('der ')) return GENDER_COLORS.m;
+  if (lower.startsWith('die ')) return GENDER_COLORS.f;
+  if (lower.startsWith('das ')) return GENDER_COLORS.n;
+  return null;
+}
+
+function deHtml(card) {
+  const color = genderColor(card);
+  return color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
 }
 
 // ═══════════════════════════════════════════════════════
