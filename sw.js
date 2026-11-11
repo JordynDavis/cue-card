@@ -1,5 +1,5 @@
-const CACHE = 'karten-v1';
-const SHELL = ['index.html', 'manifest.json', 'icon-192.png', 'icon-512.png'];
+const CACHE = 'karten-v3';
+const SHELL = ['manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -16,16 +16,30 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Never cache OpenAI requests
   if (e.request.url.includes('api.openai.com')) return;
 
+  const url = new URL(e.request.url);
+  const isHTML = url.pathname.endsWith('.html') || url.pathname.endsWith('/');
+
+  if (isHTML) {
+    // Network-first for HTML: always try to get the latest, fall back to cache offline
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Cache-first for icons and manifest
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(res => {
         if (res.ok && e.request.method === 'GET') {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
+          caches.open(CACHE).then(c => c.put(e.request, res.clone()));
         }
         return res;
       });
