@@ -31,11 +31,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; overflow: hidden; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg); color: var(--text);
-    display: flex; flex-direction: column;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
 
   /* ── Tab bar ── */
   #tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--surface3); flex-shrink: 0; z-index: 10; }
@@ -45,10 +41,8 @@
 
   /* ── Screens ── */
   #screens { flex: 1; overflow: hidden; position: relative; }
-  .screen { display: none; position: absolute; inset: 0; overflow-y: auto; padding: 16px; padding-bottom: 24px; -webkit-overflow-scrolling: touch; }
+  .screen { display: none; position: absolute; inset: 0; overflow-y: auto; padding: 16px; padding-bottom: 32px; -webkit-overflow-scrolling: touch; }
   .screen.active { display: block; }
-
-  /* ── Typography ── */
   h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
   h3 { font-size: 15px; font-weight: 600; }
 
@@ -56,13 +50,13 @@
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 20px; border-radius: var(--radius); border: none; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; min-height: 48px; white-space: nowrap; }
   .btn:active { transform: scale(0.97); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-primary  { background: var(--accent); color: #fff; }
+  .btn-primary   { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: var(--accent2); }
   .btn-secondary { background: var(--surface3); color: var(--text); }
-  .btn-danger   { background: var(--danger); color: #fff; }
-  .btn-sm       { padding: 8px 14px; font-size: 13px; min-height: 36px; }
-  .btn-full     { width: 100%; }
-  .btn-icon     { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
+  .btn-danger    { background: var(--danger); color: #fff; }
+  .btn-sm        { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+  .btn-full      { width: 100%; }
+  .btn-icon      { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center; }
 
   /* ── Inputs ── */
   .input, .textarea { width: 100%; background: var(--surface2); border: 1px solid var(--surface3); border-radius: var(--radius); color: var(--text); font-size: 15px; padding: 12px 14px; outline: none; transition: border-color 0.15s; }
@@ -72,9 +66,14 @@
   .field { margin-bottom: 14px; }
 
   /* ── Study screen ── */
-  #study-header { text-align: center; color: var(--text2); font-size: 14px; margin-bottom: 16px; }
-  #study-header .count { font-weight: 700; color: var(--text); }
   #backup-reminder { background: var(--surface2); border: 1px solid var(--warn); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--warn); margin-bottom: 12px; display: none; }
+
+  #study-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  #study-counts { font-size: 14px; color: var(--text2); }
+  #study-counts .n { font-weight: 700; color: var(--text); }
+  #study-add-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.15s; }
+  #study-add-btn:active { background: var(--accent2); }
+
   #direction-row { display: flex; gap: 8px; margin-bottom: 16px; max-width: 480px; margin-left: auto; margin-right: auto; }
   .dir-btn { flex: 1; padding: 8px 6px; background: var(--surface2); border: 1px solid var(--surface3); border-radius: 10px; color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; text-align: center; transition: background 0.15s, border-color 0.15s, color 0.15s; }
   .dir-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -83,39 +82,16 @@
   #flashcard-wrap { perspective: 1000px; margin: 0 auto 20px; max-width: 480px; }
   #flashcard { position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s ease; border-radius: var(--radius); }
   #flashcard.flipped { transform: rotateY(180deg); }
-
-  /* Front face: normal flow — sets the container height */
-  .card-front {
-    backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    background: var(--surface); border-radius: var(--radius);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 28px 20px; min-height: 240px;
-  }
-  /* Back face: absolute fill, scrolls if content overflows */
-  .card-back {
-    position: absolute; inset: 0;
-    transform: rotateY(180deg);
-    backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    background: var(--surface); border-radius: var(--radius);
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
-    padding: 16px 18px;
-    overflow-y: auto; -webkit-overflow-scrolling: touch;
-  }
-
+  .card-front { backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--surface); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 20px; min-height: 240px; }
+  .card-back { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--surface); border-radius: var(--radius); display: flex; flex-direction: column; align-items: flex-start; padding: 16px 18px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .card-direction-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; align-self: center; }
   .card-deck-label { font-size: 11px; color: var(--accent); margin-bottom: 4px; align-self: center; }
   .card-main { font-size: 26px; font-weight: 700; text-align: center; line-height: 1.3; width: 100%; }
   .tap-hint { font-size: 12px; color: var(--text3); margin-top: 16px; }
-
-  /* Back content */
   .back-answer { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--text); width: 100%; }
 
-  /* Grammar line: word_type · forms · grammar · governs */
-  .back-grammar {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
-    margin-bottom: 12px; width: 100%;
-    font-size: 12px; color: var(--text2); line-height: 1.6;
-  }
+  /* Grammar line */
+  .back-grammar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-bottom: 12px; width: 100%; font-size: 12px; color: var(--text2); line-height: 1.6; }
   .gram-type { background: rgba(124,106,240,0.18); color: var(--accent); border-radius: 6px; padding: 1px 7px; font-weight: 700; font-size: 11px; white-space: nowrap; }
   .gram-sep { color: var(--text3); padding: 0 1px; }
   .gram-forms { font-style: italic; }
@@ -124,23 +100,15 @@
 
   .back-example { font-size: 15px; color: var(--text2); margin-bottom: 3px; font-style: italic; width: 100%; }
   .back-example-en { font-size: 13px; color: var(--text3); margin-bottom: 10px; width: 100%; }
-
-  /* Muted info block: alternatives, collocations, register */
-  .back-info {
-    font-size: 12px; color: var(--text3);
-    background: var(--surface2); border-radius: 8px;
-    padding: 8px 10px; margin-top: 2px; width: 100%;
-    line-height: 1.9;
-  }
+  .back-info { font-size: 12px; color: var(--text3); background: var(--surface2); border-radius: 8px; padding: 8px 10px; margin-top: 2px; width: 100%; line-height: 1.9; }
   .back-info-row { display: flex; gap: 5px; align-items: flex-start; }
   .back-info-label { color: var(--text3); min-width: 48px; flex-shrink: 0; }
   .back-info-val { color: var(--text2); }
-
   .back-note { font-size: 13px; color: var(--accent); background: rgba(124,106,240,0.12); border-radius: 8px; padding: 7px 10px; margin-top: 8px; width: 100%; }
 
   /* Rating row */
-  #rating-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 480px; margin: 0 auto 16px; }
-  .rating-btn { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: var(--radius); border: none; cursor: pointer; font-weight: 700; font-size: 14px; min-height: 58px; transition: opacity 0.15s, transform 0.1s; }
+  #rating-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 480px; margin: 0 auto 20px; }
+  .rating-btn { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: var(--radius); border: none; cursor: pointer; font-weight: 700; font-size: 14px; min-height: 58px; transition: transform 0.1s; }
   .rating-btn:active { transform: scale(0.96); }
   .rating-btn .interval { font-size: 11px; font-weight: 400; opacity: 0.75; margin-top: 3px; }
   .rb-again { background: var(--danger); color: #fff; }
@@ -150,8 +118,22 @@
 
   #done-state { text-align: center; padding: 40px 20px; }
   #done-state .big-emoji { font-size: 52px; margin-bottom: 16px; }
-  #done-state h2 { margin-bottom: 8px; }
   #done-state p { color: var(--text2); margin-bottom: 24px; }
+
+  /* ── Chat section ── */
+  #chat-section { max-width: 480px; margin: 0 auto; }
+  .chat-divider { border: none; border-top: 1px solid var(--surface3); margin: 4px 0 16px; }
+  .chat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  #chat-messages { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  #chat-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 12px 0; }
+  .chat-bubble { max-width: 86%; padding: 9px 13px; border-radius: 16px; font-size: 14px; line-height: 1.55; word-break: break-word; }
+  .chat-user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .chat-ai { align-self: flex-start; background: var(--surface2); color: var(--text); border-bottom-left-radius: 4px; }
+  .chat-typing { align-self: flex-start; background: var(--surface2); color: var(--text3); border-bottom-left-radius: 4px; font-style: italic; }
+  #chat-input-row { display: flex; gap: 8px; align-items: center; }
+  #chat-input { flex: 1; padding: 10px 14px; font-size: 14px; }
+  #chat-send { min-width: 60px; padding: 10px 14px; font-size: 14px; min-height: 44px; }
+  #chat-error { font-size: 12px; color: var(--danger); margin-top: 6px; display: none; }
 
   /* ── Decks screen ── */
   #decks-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -162,7 +144,7 @@
   .deck-info { flex: 1; min-width: 0; }
   .deck-name { font-weight: 700; font-size: 16px; }
   .deck-count { font-size: 13px; color: var(--text3); margin-top: 2px; }
-  .deck-due { font-size: 13px; color: var(--accent); }
+  .deck-due { color: var(--accent); }
   #no-decks { text-align: center; color: var(--text3); padding: 60px 0 20px; font-size: 15px; }
 
   /* ── Deck detail overlay ── */
@@ -207,7 +189,7 @@
   .settings-info { font-size: 13px; color: var(--text3); margin-top: 6px; }
   .success-box { background: rgba(76,175,125,0.12); border: 1px solid var(--success); border-radius: var(--radius); padding: 12px 14px; color: var(--success); font-size: 14px; margin-top: 12px; display: none; }
 
-  /* ── Edit modal ── */
+  /* ── Modals ── */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
   .modal-overlay.open { display: flex; }
   .modal { background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 540px; max-height: 92vh; overflow-y: auto; padding: 20px 16px 32px; -webkit-overflow-scrolling: touch; }
@@ -228,7 +210,7 @@
   /* ── Misc ── */
   .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .error-box { background: rgba(224,91,91,0.12); border: 1px solid var(--danger); border-radius: var(--radius); padding: 12px 14px; color: var(--danger); font-size: 14px; margin-top: 12px; display: none; }
+  .select { width: 100%; background: var(--surface2); border: 1px solid var(--surface3); border-radius: var(--radius); color: var(--text); font-size: 15px; padding: 12px 14px; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%239999bb'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 </style>
 </head>
 <body>
@@ -252,16 +234,21 @@
 
   <!-- ── Study ── -->
   <section id="screen-study" class="screen active">
-    <div id="backup-reminder">⏰ Last backup was over 14 days ago — consider exporting your cards.</div>
-    <div id="study-header">
-      <span class="count" id="due-count">0</span> due today &nbsp;·&nbsp;
-      <span class="count" id="total-count">0</span> total
+    <div id="backup-reminder">⏰ Last backup was over 14 days ago — consider exporting.</div>
+
+    <div id="study-topbar">
+      <div id="study-counts">
+        <span class="n" id="due-count">0</span> due &nbsp;·&nbsp; <span class="n" id="total-count">0</span> total
+      </div>
+      <button id="study-add-btn" onclick="openQuickAdd()">＋ Add word</button>
     </div>
+
     <div id="direction-row">
       <button class="dir-btn" data-dir="de-en"  onclick="setDirection('de-en')">DE → EN</button>
       <button class="dir-btn" data-dir="en-de"  onclick="setDirection('en-de')">EN → DE</button>
       <button class="dir-btn" data-dir="mixed"  onclick="setDirection('mixed')">Mixed</button>
     </div>
+
     <div id="card-state">
       <div id="flashcard-wrap">
         <div id="flashcard" onclick="flipCard()">
@@ -282,13 +269,29 @@
           </div>
         </div>
       </div>
+
       <div id="rating-row" style="display:none">
         <button class="rating-btn rb-again" onclick="rateCard(0)">Again<span class="interval" id="int-again"></span></button>
         <button class="rating-btn rb-hard"  onclick="rateCard(1)">Hard <span class="interval" id="int-hard"></span></button>
         <button class="rating-btn rb-good"  onclick="rateCard(2)">Good <span class="interval" id="int-good"></span></button>
         <button class="rating-btn rb-excel" onclick="rateCard(3)">Excellent<span class="interval" id="int-excel"></span></button>
       </div>
+
+      <!-- Chat -->
+      <div id="chat-section">
+        <hr class="chat-divider">
+        <div class="chat-label">Ask about this word</div>
+        <div id="chat-messages">
+          <div id="chat-empty">Ask anything — grammar, usage, examples…</div>
+        </div>
+        <div id="chat-input-row">
+          <input class="input" id="chat-input" type="text" placeholder="e.g. Could I say …?" autocomplete="off" autocorrect="off">
+          <button class="btn btn-primary" id="chat-send" onclick="sendChatMessage()">Send</button>
+        </div>
+        <div id="chat-error"></div>
+      </div>
     </div>
+
     <div id="done-state" style="display:none">
       <div class="big-emoji">🎉</div>
       <h2>Done for today!</h2>
@@ -369,6 +372,32 @@
   </div>
 </div>
 
+<!-- ── Quick-add modal ── -->
+<div class="modal-overlay" id="quick-add-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add a word</h3>
+      <button class="modal-close" onclick="closeQuickAdd()">✕</button>
+    </div>
+    <div class="field">
+      <label class="label">Deck</label>
+      <select class="select" id="qa-deck-select"></select>
+    </div>
+    <div class="field">
+      <label class="label">Word or phrase</label>
+      <input class="input" id="qa-word-input" type="text" placeholder="e.g. jump, der Tisch, to wait for…" autocomplete="off" autocorrect="off" autocapitalize="off">
+    </div>
+    <div id="qa-no-decks" style="display:none;font-size:14px;color:var(--text3);margin-bottom:14px">
+      No decks yet — go to the Decks tab and create one first.
+    </div>
+    <div id="qa-error" style="font-size:13px;color:var(--danger);margin-bottom:10px;display:none"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="qa-submit-btn" onclick="quickAddSubmit()">Add card</button>
+      <button class="btn btn-secondary" onclick="closeQuickAdd()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Edit modal ── -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
@@ -445,7 +474,7 @@ Field rules:
 - governs: the case/preposition the word requires, e.g. "helfen + Dat", "warten auf + Akk", "stolz auf + Akk"; "" for most nouns/adjectives unless they govern a case.
 - example: a sentence that demonstrates the most important grammar point (show Perfekt for sein-Verbs, show the case/preposition in use, show trennbar prefix separated, etc.).
 - example_en: English translation of the example.
-- alternatives: if the English word has other common German equivalents, explain them in one line, e.g. "hüpfen = hop/skip (small repeated jumps)"; "" if none.
+- alternatives: if the English word has other common German equivalents, explain in one line, e.g. "hüpfen = hop/skip (small repeated jumps)"; "" if none.
 - collocations: 1–2 common collocations separated by "; "; "" if none.
 - register: "casual", "neutral", or "formal".
 - gender: "m" for der-nouns, "f" for die-nouns (singular), "n" for das-nouns; "" for non-nouns and plural-only nouns (e.g. "die Leute" → "").
@@ -492,6 +521,7 @@ let studyQueue    = [];
 let isFlipped     = false;
 let editingCardId = null;
 let currentDeckId = null;
+let chatHistory   = []; // in-memory only, resets per card
 
 // ═══════════════════════════════════════════════════════
 // Navigation
@@ -537,13 +567,23 @@ function initStudy() {
   if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
 }
 
-function showCardState() { document.getElementById('card-state').style.display = ''; document.getElementById('done-state').style.display = 'none'; }
-function showDoneState()  { document.getElementById('card-state').style.display = 'none'; document.getElementById('done-state').style.display = ''; }
-function studyAhead()     { studyQueue = buildStudyQueue(true); if (studyQueue.length) { showCardState(); nextCard(); } }
+function showCardState() {
+  document.getElementById('card-state').style.display = '';
+  document.getElementById('done-state').style.display = 'none';
+}
+function showDoneState() {
+  document.getElementById('card-state').style.display = 'none';
+  document.getElementById('done-state').style.display = '';
+}
+function studyAhead() {
+  studyQueue = buildStudyQueue(true);
+  if (studyQueue.length) { showCardState(); nextCard(); }
+}
 
 function nextCard() {
   if (!studyQueue.length) { showDoneState(); return; }
   currentCard = studyQueue.shift();
+  clearChat();
   showCard(currentCard);
 }
 
@@ -555,13 +595,12 @@ function showCard(card) {
   const isDE = dir === 'de-en' || (dir === 'mixed' && Math.random() < 0.5);
   card._showDE = isDE;
 
-  const decks = loadDecks();
-  const deck = decks.find(d => d.id === card.deckId);
-  document.getElementById('card-deck-label').textContent      = deck ? deck.name : '';
-  const color = genderColor(card);
-  document.getElementById('card-dir-label').textContent      = isDE ? 'German' : 'English';
+  const deck = loadDecks().find(d => d.id === card.deckId);
+  document.getElementById('card-deck-label').textContent = deck ? deck.name : '';
+  document.getElementById('card-dir-label').textContent  = isDE ? 'German' : 'English';
   document.getElementById('card-back-dir-label').textContent = isDE ? 'English' : 'German';
 
+  const color = genderColor(card);
   const frontEl = document.getElementById('card-front-text');
   const backEl  = document.getElementById('back-answer');
   if (isDE) {
@@ -573,16 +612,12 @@ function showCard(card) {
     frontEl.style.color = '';
     backEl.innerHTML    = color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
   }
-  document.getElementById('back-example').textContent         = card.example    || '';
-  document.getElementById('back-example-en').textContent      = card.example_en || '';
 
-  // Grammar line
+  document.getElementById('back-example').textContent    = card.example    || '';
+  document.getElementById('back-example-en').textContent = card.example_en || '';
   renderGrammarLine(card);
-
-  // Info block
   renderInfoBlock(card);
 
-  // Note
   const noteEl = document.getElementById('back-note');
   if (card.note) { noteEl.textContent = '💡 ' + card.note; noteEl.style.display = ''; }
   else noteEl.style.display = 'none';
@@ -593,60 +628,10 @@ function showCard(card) {
   document.getElementById('int-hard').textContent  = intervalLabel(computeNextLevel(lvl,1), 1);
   document.getElementById('int-good').textContent  = intervalLabel(computeNextLevel(lvl,2), 2);
   document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl,3), 3);
-}
 
-function renderGrammarLine(card) {
-  const el = document.getElementById('back-grammar');
-  el.innerHTML = '';
-
-  const parts = [];
-  if (card.word_type) parts.push({ type: 'type', val: card.word_type });
-  if (card.forms)     parts.push({ type: 'forms', val: card.forms });
-  if (card.grammar)   parts.push({ type: 'tag', val: card.grammar });
-  if (card.governs)   parts.push({ type: 'governs', val: card.governs });
-
-  if (parts.length === 0) { el.style.display = 'none'; return; }
-  el.style.display = '';
-
-  parts.forEach((p, i) => {
-    if (i > 0) {
-      const sep = document.createElement('span');
-      sep.className = 'gram-sep'; sep.textContent = '·';
-      el.appendChild(sep);
-    }
-    const span = document.createElement('span');
-    if (p.type === 'type')    { span.className = 'gram-type'; span.textContent = p.val; }
-    else if (p.type === 'forms')   { span.className = 'gram-forms'; span.textContent = p.val; }
-    else if (p.type === 'governs') { span.className = 'gram-governs'; span.textContent = p.val; }
-    else {
-      // grammar tags may be comma-separated — render each as a chip
-      p.val.split(',').forEach((tag, ti) => {
-        const chip = document.createElement('span');
-        chip.className = 'gram-tag'; chip.textContent = tag.trim();
-        el.appendChild(chip);
-        if (ti < p.val.split(',').length - 1) {
-          const s2 = document.createElement('span'); s2.className = 'gram-sep'; s2.textContent = '';
-          el.appendChild(s2);
-        }
-      });
-      return;
-    }
-    el.appendChild(span);
-  });
-}
-
-function renderInfoBlock(card) {
-  const el = document.getElementById('back-info');
-  const rows = [];
-  if (card.alternatives) rows.push(['also', card.alternatives]);
-  if (card.collocations) rows.push(['e.g.', card.collocations]);
-  if (card.register && card.register !== 'neutral') rows.push(['register', card.register]);
-
-  if (rows.length === 0) { el.style.display = 'none'; return; }
-  el.style.display = '';
-  el.innerHTML = rows.map(([label, val]) =>
-    `<div class="back-info-row"><span class="back-info-label">${esc(label)}</span><span class="back-info-val">${esc(val)}</span></div>`
-  ).join('');
+  // Update chat placeholder with current word
+  document.getElementById('chat-input').placeholder =
+    `Ask about "${card.de}"…`;
 }
 
 function flipCard() {
@@ -672,40 +657,242 @@ function rateCard(rating) {
   nextCard();
 }
 
+// ── Grammar / info block renderers ──
+function renderGrammarLine(card) {
+  const el = document.getElementById('back-grammar');
+  el.innerHTML = '';
+  const parts = [];
+  if (card.word_type) parts.push({ t: 'type',    v: card.word_type });
+  if (card.forms)     parts.push({ t: 'forms',   v: card.forms });
+  if (card.grammar)   parts.push({ t: 'tags',    v: card.grammar });
+  if (card.governs)   parts.push({ t: 'governs', v: card.governs });
+  if (!parts.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  parts.forEach((p, i) => {
+    if (i > 0) { const s = document.createElement('span'); s.className = 'gram-sep'; s.textContent = '·'; el.appendChild(s); }
+    if (p.t === 'type') {
+      const s = document.createElement('span'); s.className = 'gram-type'; s.textContent = p.v; el.appendChild(s);
+    } else if (p.t === 'forms') {
+      const s = document.createElement('span'); s.className = 'gram-forms'; s.textContent = p.v; el.appendChild(s);
+    } else if (p.t === 'governs') {
+      const s = document.createElement('span'); s.className = 'gram-governs'; s.textContent = p.v; el.appendChild(s);
+    } else {
+      p.v.split(',').forEach(tag => {
+        const s = document.createElement('span'); s.className = 'gram-tag'; s.textContent = tag.trim(); el.appendChild(s);
+      });
+    }
+  });
+}
+
+function renderInfoBlock(card) {
+  const el = document.getElementById('back-info');
+  const rows = [
+    card.alternatives && ['also', card.alternatives],
+    card.collocations && ['e.g.', card.collocations],
+    card.register && card.register !== 'neutral' && ['register', card.register],
+  ].filter(Boolean);
+  if (!rows.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.innerHTML = rows.map(([k,v]) =>
+    `<div class="back-info-row"><span class="back-info-label">${esc(k)}</span><span class="back-info-val">${esc(v)}</span></div>`
+  ).join('');
+}
+
 // ═══════════════════════════════════════════════════════
-// OpenAI call (shared by add + enrich)
+// Chat
+// ═══════════════════════════════════════════════════════
+function clearChat() {
+  chatHistory = [];
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = '<div id="chat-empty">Ask anything — grammar, usage, examples…</div>';
+  document.getElementById('chat-error').style.display = 'none';
+  document.getElementById('chat-input').value = '';
+}
+
+function renderChatMessages() {
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = '';
+  chatHistory.forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'chat-bubble ' + (m.role === 'user' ? 'chat-user' : 'chat-ai');
+    el.textContent = m.content;
+    msgs.appendChild(el);
+  });
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendTypingIndicator() {
+  const msgs = document.getElementById('chat-messages');
+  const el = document.createElement('div');
+  el.className = 'chat-bubble chat-typing';
+  el.id = 'chat-typing';
+  el.textContent = 'typing…';
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendChatMessage() {
+  if (!currentCard) return;
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const s = loadSettings();
+  const errEl = document.getElementById('chat-error');
+  errEl.style.display = 'none';
+
+  if (!s.apiKey) { errEl.textContent = 'No API key — add it in Settings.'; errEl.style.display = 'block'; return; }
+  if (!navigator.onLine) { errEl.textContent = "You're offline."; errEl.style.display = 'block'; return; }
+
+  chatHistory.push({ role: 'user', content: msg });
+  input.value = '';
+  renderChatMessages();
+  appendTypingIndicator();
+
+  const btn = document.getElementById('chat-send');
+  btn.disabled = true;
+
+  const c = currentCard;
+  const contextLines = [
+    `German: ${c.de}`,
+    `English: ${c.en}`,
+    c.forms   ? `Forms: ${c.forms}`   : '',
+    c.grammar ? `Grammar: ${c.grammar}` : '',
+    c.governs ? `Governs: ${c.governs}` : '',
+    c.example ? `Example: ${c.example}` : '',
+  ].filter(Boolean).join('\n');
+
+  const systemMsg = `You are a German language tutor. The student is studying this word:\n\n${contextLines}\n\nAnswer their questions about usage, grammar, and examples. Be concise — 2–4 sentences is ideal. Use short German examples where helpful.`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` },
+      body: JSON.stringify({
+        model: s.model || 'gpt-4.1-mini',
+        messages: [{ role: 'system', content: systemMsg }, ...chatHistory]
+      })
+    });
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d?.error?.message || `HTTP ${res.status}`); }
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || '(no response)';
+    chatHistory.push({ role: 'assistant', content: reply });
+    renderChatMessages();
+  } catch (e) {
+    // remove last user message on error so they can retry
+    chatHistory.pop();
+    renderChatMessages();
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    document.getElementById('chat-typing')?.remove();
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendChatMessage();
+});
+
+// ═══════════════════════════════════════════════════════
+// Quick-add (from study screen)
+// ═══════════════════════════════════════════════════════
+function openQuickAdd() {
+  const decks = loadDecks();
+  const sel = document.getElementById('qa-deck-select');
+  const noDecks = document.getElementById('qa-no-decks');
+  const btn = document.getElementById('qa-submit-btn');
+  sel.innerHTML = '';
+  if (decks.length === 0) {
+    noDecks.style.display = '';
+    sel.style.display = 'none';
+    btn.disabled = true;
+  } else {
+    noDecks.style.display = 'none';
+    sel.style.display = '';
+    btn.disabled = false;
+    decks.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id; opt.textContent = d.name;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('qa-word-input').value = '';
+  document.getElementById('qa-error').style.display = 'none';
+  document.getElementById('quick-add-modal').classList.add('open');
+  setTimeout(() => document.getElementById('qa-word-input').focus(), 100);
+}
+
+function closeQuickAdd() {
+  document.getElementById('quick-add-modal').classList.remove('open');
+}
+
+async function quickAddSubmit() {
+  const word = document.getElementById('qa-word-input').value.trim();
+  const deckId = document.getElementById('qa-deck-select').value;
+  const errEl = document.getElementById('qa-error');
+  errEl.style.display = 'none';
+  if (!word) return;
+
+  const btn = document.getElementById('qa-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    const c = await callOpenAI(word);
+    const cards = loadCards(), now = Date.now();
+    cards.push({
+      id: uid(), deckId,
+      de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
+      word_type: c.word_type, forms: c.forms, grammar: c.grammar,
+      governs: c.governs, alternatives: c.alternatives,
+      collocations: c.collocations, register: c.register, gender: c.gender,
+      level: 0, due: now, lastReviewed: null, added: now
+    });
+    saveCards(cards);
+    // refresh due count
+    document.getElementById('due-count').textContent = loadCards().filter(c => c.due <= endOfToday()).length;
+    document.getElementById('total-count').textContent = loadCards().length;
+    closeQuickAdd();
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add card';
+  }
+}
+
+document.getElementById('qa-word-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') quickAddSubmit();
+});
+document.getElementById('quick-add-modal').addEventListener('click', function(e) { if (e.target === this) closeQuickAdd(); });
+
+// ═══════════════════════════════════════════════════════
+// OpenAI — shared card generation
 // ═══════════════════════════════════════════════════════
 async function callOpenAI(userMessage) {
   const s = loadSettings();
   if (!s.apiKey) throw new Error('No API key — add it in Settings.');
   if (!navigator.onLine) throw new Error("You're offline — generating needs internet.");
-
   const systemPrompt = s.extraInstructions
     ? SYSTEM_PROMPT_BASE + '\n\nExtra instructions: ' + s.extraInstructions
     : SYSTEM_PROMPT_BASE;
-
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${s.apiKey}` },
     body: JSON.stringify({
       model: s.model || 'gpt-4.1-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage }
-      ],
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }],
       response_format: { type: 'json_schema', json_schema: { name: 'flashcards', strict: true, schema: CARD_SCHEMA } }
     })
   });
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data?.error?.message || `HTTP ${res.status}`);
-  }
+  if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d?.error?.message || `HTTP ${res.status}`); }
   const data = await res.json();
   const choice = data.choices?.[0];
   if (choice?.message?.refusal) throw new Error('Model refused: ' + choice.message.refusal);
-  const parsed = JSON.parse(choice.message.content);
-  const c = parsed.cards?.[0];
+  const c = JSON.parse(choice.message.content).cards?.[0];
   if (!c) throw new Error('No card returned.');
   return c;
 }
@@ -758,9 +945,7 @@ function deleteDeck() {
   renderDecksList();
 }
 
-// ═══════════════════════════════════════════════════════
-// Deck detail
-// ═══════════════════════════════════════════════════════
+// ── Deck detail ──
 function openDeckOverlay(deckId) {
   currentDeckId = deckId;
   const deck = loadDecks().find(d => d.id === deckId);
@@ -800,17 +985,13 @@ function deleteDeckCard(e, id) {
   renderDeckCards();
 }
 
-// ── Single-word generation ──
 async function addWordToDeck() {
   const word = document.getElementById('add-word-input').value.trim();
   const errEl = document.getElementById('add-word-error');
   errEl.style.display = 'none';
   if (!word) return;
-
   const btn = document.getElementById('add-word-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>';
-
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   try {
     const c = await callOpenAI(word);
     const cards = loadCards(), now = Date.now();
@@ -826,11 +1007,9 @@ async function addWordToDeck() {
     document.getElementById('add-word-input').value = '';
     renderDeckCards();
   } catch (e) {
-    document.getElementById('add-word-error').textContent = e.message;
-    document.getElementById('add-word-error').style.display = 'block';
+    errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Add';
+    btn.disabled = false; btn.textContent = 'Add';
   }
 }
 document.getElementById('add-word-input').addEventListener('keydown', e => { if (e.key === 'Enter') addWordToDeck(); });
@@ -887,8 +1066,6 @@ function openEditModal(id) {
   document.getElementById('edit-ex').value    = card.example     || '';
   document.getElementById('edit-ex-en').value = card.example_en  || '';
   document.getElementById('edit-note').value  = card.note        || '';
-
-  // Show enriched fields if present
   showEnrichPreview(card);
   document.getElementById('enrich-error').style.display = 'none';
   document.getElementById('edit-modal').classList.add('open');
@@ -897,16 +1074,15 @@ function openEditModal(id) {
 function showEnrichPreview(card) {
   const el = document.getElementById('enrich-preview');
   const fields = [
-    card.word_type    && ['Type',         card.word_type],
-    card.forms        && ['Forms',         card.forms],
-    card.grammar      && ['Grammar',       card.grammar],
-    card.governs      && ['Governs',       card.governs],
-    card.alternatives && ['Also',          card.alternatives],
-    card.collocations && ['Collocations',  card.collocations],
-    card.register     && ['Register',      card.register],
+    card.word_type    && ['Type',        card.word_type],
+    card.forms        && ['Forms',       card.forms],
+    card.grammar      && ['Grammar',     card.grammar],
+    card.governs      && ['Governs',     card.governs],
+    card.alternatives && ['Also',        card.alternatives],
+    card.collocations && ['Collocations',card.collocations],
+    card.register     && ['Register',    card.register],
   ].filter(Boolean);
-
-  if (fields.length === 0) { el.style.display = 'none'; return; }
+  if (!fields.length) { el.style.display = 'none'; return; }
   el.style.display = '';
   el.innerHTML = fields.map(([k,v]) => `<b>${esc(k)}:</b> ${esc(v)}<br>`).join('');
 }
@@ -917,8 +1093,8 @@ function saveEdit() {
   const cards = loadCards();
   const idx = cards.findIndex(c => c.id === editingCardId);
   if (idx === -1) { closeEditModal(); return; }
-  cards[idx].de         = document.getElementById('edit-de').value.trim();
-  cards[idx].en         = document.getElementById('edit-en').value.trim();
+  cards[idx].de = document.getElementById('edit-de').value.trim();
+  cards[idx].en = document.getElementById('edit-en').value.trim();
   cards[idx].example    = document.getElementById('edit-ex').value.trim();
   cards[idx].example_en = document.getElementById('edit-ex-en').value.trim();
   cards[idx].note       = document.getElementById('edit-note').value.trim();
@@ -943,42 +1119,54 @@ async function enrichCard() {
   const cards = loadCards();
   const idx = cards.findIndex(c => c.id === editingCardId);
   if (idx === -1) return;
-
   const btn = document.getElementById('enrich-btn');
   const errEl = document.getElementById('enrich-error');
   errEl.style.display = 'none';
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>';
-
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   try {
     const de = document.getElementById('edit-de').value.trim() || cards[idx].de;
     const en = document.getElementById('edit-en').value.trim() || cards[idx].en;
-    // Send both so the model knows exactly what card to enrich
     const c = await callOpenAI(`${de} / ${en}`);
-    cards[idx].word_type    = c.word_type;
-    cards[idx].forms        = c.forms;
-    cards[idx].grammar      = c.grammar;
-    cards[idx].governs      = c.governs;
-    cards[idx].alternatives = c.alternatives;
-    cards[idx].collocations = c.collocations;
-    cards[idx].register     = c.register;
-    cards[idx].gender       = c.gender;
-    // Optionally update core fields too if they were empty
+    cards[idx].word_type = c.word_type; cards[idx].forms = c.forms;
+    cards[idx].grammar = c.grammar; cards[idx].governs = c.governs;
+    cards[idx].alternatives = c.alternatives; cards[idx].collocations = c.collocations;
+    cards[idx].register = c.register; cards[idx].gender = c.gender;
     if (!cards[idx].example)    cards[idx].example    = c.example;
     if (!cards[idx].example_en) cards[idx].example_en = c.example_en;
     if (!cards[idx].note)       cards[idx].note        = c.note;
     saveCards(cards);
     showEnrichPreview(cards[idx]);
   } catch (e) {
-    errEl.textContent = e.message;
-    errEl.style.display = 'block';
+    errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = '✨ Enrich';
+    btn.disabled = false; btn.textContent = '✨ Enrich';
   }
 }
 
 document.getElementById('edit-modal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
+
+// ═══════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const GENDER_COLORS = { m: '#4A90E2', f: '#E5484D', n: '#30A46C' };
+
+function genderColor(card) {
+  if (card.gender) return GENDER_COLORS[card.gender] || null;
+  const lower = (card.de || '').toLowerCase();
+  if (lower.startsWith('der ')) return GENDER_COLORS.m;
+  if (lower.startsWith('die ')) return GENDER_COLORS.f;
+  if (lower.startsWith('das ')) return GENDER_COLORS.n;
+  return null;
+}
+
+function deHtml(card) {
+  const color = genderColor(card);
+  return color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
+}
 
 // ═══════════════════════════════════════════════════════
 // Settings
@@ -993,8 +1181,8 @@ function loadSettingsUI() {
 }
 function saveSettingsFromUI() {
   const s = loadSettings();
-  s.apiKey            = document.getElementById('api-key').value.trim();
-  s.model             = document.getElementById('model-name').value.trim() || 'gpt-4.1-mini';
+  s.apiKey = document.getElementById('api-key').value.trim();
+  s.model  = document.getElementById('model-name').value.trim() || 'gpt-4.1-mini';
   s.extraInstructions = document.getElementById('extra-instructions').value.trim();
   saveSettings(s);
 }
@@ -1006,8 +1194,8 @@ function exportCards() {
   saveSettingsFromUI();
   const blob = new Blob([JSON.stringify({ decks: loadDecks(), cards: loadCards() }, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `karten-backup-${new Date().toISOString().slice(0,10)}.json`;
+  const a = document.createElement('a'); a.href = url;
+  a.download = `karten-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(url);
   const s = loadSettings(); s.lastExport = Date.now(); saveSettings(s);
   loadSettingsUI();
@@ -1045,30 +1233,6 @@ function clearAllData() {
 }
 
 // ═══════════════════════════════════════════════════════
-// Helpers
-// ═══════════════════════════════════════════════════════
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-const GENDER_COLORS = { m: '#4A90E2', f: '#E5484D', n: '#30A46C' };
-
-function genderColor(card) {
-  if (card.gender) return GENDER_COLORS[card.gender] || null;
-  // Fallback for old cards: detect leading article
-  const lower = (card.de || '').toLowerCase();
-  if (lower.startsWith('der ')) return GENDER_COLORS.m;
-  if (lower.startsWith('die ')) return GENDER_COLORS.f;
-  if (lower.startsWith('das ')) return GENDER_COLORS.n;
-  return null;
-}
-
-function deHtml(card) {
-  const color = genderColor(card);
-  return color ? `<span style="color:${color}">${esc(card.de)}</span>` : esc(card.de);
-}
-
-// ═══════════════════════════════════════════════════════
 // Pull-to-refresh
 // ═══════════════════════════════════════════════════════
 (function() {
@@ -1081,17 +1245,14 @@ function deHtml(card) {
   const activeScreen = () => document.querySelector('.screen.active');
 
   document.addEventListener('touchstart', e => {
-    const sc = activeScreen();
-    if (!sc || sc.scrollTop > 0) return;
+    const sc = activeScreen(); if (!sc || sc.scrollTop > 0) return;
     startY = e.touches[0].clientY; pulling = true; triggered = false;
   }, { passive: true });
 
   document.addEventListener('touchmove', e => {
     if (!pulling) return;
-    const sc = activeScreen();
-    if (!sc || sc.scrollTop > 0) { pulling = false; return; }
-    const dy = Math.max(0, e.touches[0].clientY - startY);
-    if (dy <= 0) return;
+    const sc = activeScreen(); if (!sc || sc.scrollTop > 0) { pulling = false; return; }
+    const dy = Math.max(0, e.touches[0].clientY - startY); if (dy <= 0) return;
     const h = Math.min(dy * 0.5, THRESHOLD);
     indicator.style.height = h + 'px';
     const ready = dy * 0.5 >= THRESHOLD;
@@ -1100,18 +1261,15 @@ function deHtml(card) {
   }, { passive: true });
 
   document.addEventListener('touchend', e => {
-    if (!pulling) return;
-    pulling = false;
+    if (!pulling) return; pulling = false;
     const dy = Math.max(0, e.changedTouches[0].clientY - startY);
     if (dy * 0.5 >= THRESHOLD && !triggered) {
       triggered = true;
       arrow.style.display = 'none'; spinner.style.display = 'inline-block';
-      label.textContent = 'Refreshing…';
-      indicator.style.height = THRESHOLD + 'px';
+      label.textContent = 'Refreshing…'; indicator.style.height = THRESHOLD + 'px';
       setTimeout(() => location.reload(), 300);
     } else {
-      indicator.style.height = '0';
-      arrow.classList.remove('ready'); arrow.style.display = '';
+      indicator.style.height = '0'; arrow.classList.remove('ready'); arrow.style.display = '';
       label.textContent = 'Pull to refresh';
     }
   }, { passive: true });
