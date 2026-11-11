@@ -571,6 +571,22 @@ function showCardState() {
   document.getElementById('card-state').style.display = '';
   document.getElementById('done-state').style.display = 'none';
 }
+
+// Show a specific card immediately on the study screen (used after adding)
+function previewNewCard(card) {
+  // Switch to study tab without resetting the queue
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-study').classList.add('active');
+  document.querySelector('.tab[data-screen="study"]').classList.add('active');
+  const allCards = loadCards();
+  document.getElementById('due-count').textContent   = allCards.filter(c => c.due <= endOfToday()).length;
+  document.getElementById('total-count').textContent = allCards.length;
+  currentCard = card;
+  showCardState();
+  clearChat();
+  showCard(card);
+}
 function showDoneState() {
   document.getElementById('card-state').style.display = 'none';
   document.getElementById('done-state').style.display = '';
@@ -851,10 +867,8 @@ async function quickAddSubmit() {
       level: 0, due: now, lastReviewed: null, added: now
     });
     saveCards(cards);
-    // refresh due count
-    document.getElementById('due-count').textContent = loadCards().filter(c => c.due <= endOfToday()).length;
-    document.getElementById('total-count').textContent = loadCards().length;
     closeQuickAdd();
+    previewNewCard(cards[cards.length - 1]);
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = 'block';
@@ -1006,6 +1020,8 @@ async function addWordToDeck() {
     saveCards(cards);
     document.getElementById('add-word-input').value = '';
     renderDeckCards();
+    closeDeckOverlay();
+    previewNewCard(cards[cards.length - 1]);
   } catch (e) {
     errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
