@@ -801,7 +801,7 @@ async function sendChatMessage() {
     c.example ? `Example: ${c.example}` : '',
   ].filter(Boolean).join('\n');
 
-  const systemMsg = `You are a German language tutor. The student is studying this word:\n\n${contextLines}\n\nAlways respond in English. You may include short German examples or quotes, but all explanations must be in English. Be concise — 2–4 sentences is ideal.`;
+  const systemMsg = `You are a German language tutor. The student is studying this word:\n\n${contextLines}\n\nAlways respond in English. You may include short German examples or quotes, but all explanations must be in English.`;
 
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
