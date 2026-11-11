@@ -457,11 +457,14 @@ const CARD_SCHEMA = {
 };
 
 const SYSTEM_PROMPT_BASE = `You make German flashcards for an English speaker.
-Given a single word or short phrase, create exactly 1 flashcard.
+
+Decide how many cards to create:
+- Normally: exactly 1 card.
+- Create MULTIPLE cards only when the input word has genuinely distinct meanings that require separate cards — different grammatical forms with different English translations. Example: "date" → 2 cards: "das Datum, die Daten" (calendar date) AND "die Verabredung, -en" (romantic date). Do NOT create multiple cards just because a word has several senses that share the same English translation.
 
 Field rules:
-- de: the German word/phrase. Nouns: article + plural (e.g. "der Tisch, -e"). Verbs: infinitive.
-- en: the primary English translation.
+- de: the German word/phrase. Nouns: article + singular, then plural form (e.g. "der Tisch, -e"). Verbs: infinitive.
+- en: the specific English translation for THIS card (not all possible translations).
 - word_type: one of verb, noun, adjective, adverb, preposition, phrase.
 - forms:
     verbs — 3rd person present ONLY if the stem changes, then Präteritum, then Perfekt with aux
@@ -473,13 +476,12 @@ Field rules:
 - governs: the case/preposition the word requires, e.g. "helfen + Dat", "warten auf + Akk", "stolz auf + Akk"; "" for most nouns/adjectives unless they govern a case.
 - example: a sentence that demonstrates the most important grammar point (show Perfekt for sein-Verbs, show the case/preposition in use, show trennbar prefix separated, etc.).
 - example_en: English translation of the example.
-- alternatives: if the English word has other common German equivalents, explain in one line, e.g. "hüpfen = hop/skip (small repeated jumps)"; "" if none.
+- alternatives: other common German equivalents for the same English meaning, e.g. "hüpfen = hop/skip (small repeated jumps)"; "" if none.
 - collocations: 1–2 common collocations separated by "; "; "" if none.
 - register: "casual", "neutral", or "formal".
 - gender: "m" for der-nouns, "f" for die-nouns (singular), "n" for das-nouns; "" for non-nouns and plural-only nouns (e.g. "die Leute" → "").
 - note: one short tip about irregular behaviour or usage nuance; "" if nothing essential.
 
-If the input has several German equivalents, pick the most common for "de" and list others in "alternatives".
 Use "" (empty string) for any field that does not apply — never omit a field.`;
 
 // ═══════════════════════════════════════════════════════
@@ -855,19 +857,20 @@ async function quickAddSubmit() {
   btn.innerHTML = '<span class="spinner"></span>';
 
   try {
-    const c = await callOpenAI(word);
+    const results = await callOpenAI(word);
     const cards = loadCards(), now = Date.now();
-    cards.push({
+    const newCards = results.map(c => ({
       id: uid(), deckId,
       de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
       word_type: c.word_type, forms: c.forms, grammar: c.grammar,
       governs: c.governs, alternatives: c.alternatives,
       collocations: c.collocations, register: c.register, gender: c.gender,
       level: 0, due: now, lastReviewed: null, added: now
-    });
+    }));
+    newCards.forEach(c => cards.push(c));
     saveCards(cards);
     closeQuickAdd();
-    previewNewCard(cards[cards.length - 1]);
+    previewNewCard(newCards[0]);
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = 'block';
@@ -905,9 +908,9 @@ async function callOpenAI(userMessage) {
   const data = await res.json();
   const choice = data.choices?.[0];
   if (choice?.message?.refusal) throw new Error('Model refused: ' + choice.message.refusal);
-  const c = JSON.parse(choice.message.content).cards?.[0];
-  if (!c) throw new Error('No card returned.');
-  return c;
+  const cards = JSON.parse(choice.message.content).cards;
+  if (!cards?.length) throw new Error('No card returned.');
+  return cards;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1006,21 +1009,22 @@ async function addWordToDeck() {
   const btn = document.getElementById('add-word-btn');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   try {
-    const c = await callOpenAI(word);
+    const results = await callOpenAI(word);
     const cards = loadCards(), now = Date.now();
-    cards.push({
+    const newCards = results.map(c => ({
       id: uid(), deckId: currentDeckId,
       de: c.de, en: c.en, example: c.example, example_en: c.example_en, note: c.note,
       word_type: c.word_type, forms: c.forms, grammar: c.grammar,
       governs: c.governs, alternatives: c.alternatives,
       collocations: c.collocations, register: c.register, gender: c.gender,
       level: 0, due: now, lastReviewed: null, added: now
-    });
+    }));
+    newCards.forEach(c => cards.push(c));
     saveCards(cards);
     document.getElementById('add-word-input').value = '';
     renderDeckCards();
     closeDeckOverlay();
-    previewNewCard(cards[cards.length - 1]);
+    previewNewCard(newCards[0]);
   } catch (e) {
     errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
@@ -1051,7 +1055,7 @@ function renderCardsList() {
         <div class="card-row-en">${esc(card.en)}</div>
         <div class="card-row-meta">
           <span class="level-badge level-${card.level}">L${card.level}</span>
-          ${deck ? `<span style="color:var(--accent)">${esc(deck.name)}</span>` : ''}
+          ${deck ? `<span style="color:var(--text2)">${esc(deck.name)}</span>` : ''}
           <span>due ${due}</span>
         </div>
       </div>
@@ -1141,7 +1145,7 @@ async function enrichCard() {
   try {
     const de = document.getElementById('edit-de').value.trim() || cards[idx].de;
     const en = document.getElementById('edit-en').value.trim() || cards[idx].en;
-    const c = await callOpenAI(`${de} / ${en}`);
+    const [c] = await callOpenAI(`${de} / ${en}`);
     cards[idx].word_type = c.word_type; cards[idx].forms = c.forms;
     cards[idx].grammar = c.grammar; cards[idx].governs = c.governs;
     cards[idx].alternatives = c.alternatives; cards[idx].collocations = c.collocations;
