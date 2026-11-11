@@ -239,7 +239,10 @@
       <div id="study-counts">
         <span class="n" id="due-count">0</span> due &nbsp;·&nbsp; <span class="n" id="total-count">0</span> total
       </div>
-      <button id="study-add-btn" onclick="openQuickAdd()">＋ Add word</button>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="btn-icon" id="study-delete-btn" onclick="deleteCurrentCard()" style="display:none;font-size:17px" title="Delete card">🗑</button>
+        <button id="study-add-btn" onclick="openQuickAdd()">＋ Add word</button>
+      </div>
     </div>
 
     <div id="direction-row">
@@ -591,6 +594,7 @@ function previewNewCard(card) {
 function showDoneState() {
   document.getElementById('card-state').style.display = 'none';
   document.getElementById('done-state').style.display = '';
+  document.getElementById('study-delete-btn').style.display = 'none';
 }
 function studyAhead() {
   studyQueue = buildStudyQueue(true);
@@ -646,6 +650,8 @@ function showCard(card) {
   document.getElementById('int-good').textContent  = intervalLabel(computeNextLevel(lvl,2), 2);
   document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl,3), 3);
 
+  document.getElementById('study-delete-btn').style.display = '';
+
   // Update chat placeholder with current word
   document.getElementById('chat-input').placeholder =
     `Ask about "${card.de}"…`;
@@ -656,6 +662,19 @@ function flipCard() {
   isFlipped = !isFlipped;
   document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
   document.getElementById('rating-row').style.display = isFlipped ? 'grid' : 'none';
+}
+
+function deleteCurrentCard() {
+  if (!currentCard) return;
+  if (!confirm(`Delete "${currentCard.de}"?`)) return;
+  saveCards(loadCards().filter(c => c.id !== currentCard.id));
+  const allCards = loadCards();
+  document.getElementById('due-count').textContent   = allCards.filter(c => c.due <= endOfToday()).length;
+  document.getElementById('total-count').textContent = allCards.length;
+  studyQueue = studyQueue.filter(c => c.id !== currentCard.id);
+  currentCard = null;
+  document.getElementById('study-delete-btn').style.display = 'none';
+  nextCard();
 }
 
 function rateCard(rating) {
