@@ -509,10 +509,13 @@ function computeNextLevel(level, rating) {
   return Math.min(6, level + 2);
 }
 function computeDue(newLevel, rating) {
-  return rating === 0 ? Date.now() + MIN_MS : Date.now() + INTERVALS[newLevel] * DAY_MS;
+  if (rating === 0) return Date.now() + MIN_MS;
+  if (rating === 1) return Date.now() + 15 * MIN_MS;
+  return Date.now() + INTERVALS[newLevel] * DAY_MS;
 }
 function intervalLabel(newLevel, rating) {
   if (rating === 0) return '1 min';
+  if (rating === 1) return '15 min';
   const d = INTERVALS[newLevel];
   return d === 0 ? 'now' : d === 1 ? '1 d' : `${d} d`;
 }
