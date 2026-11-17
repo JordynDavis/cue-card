@@ -67,11 +67,13 @@
   /* ── Study screen ── */
   #backup-reminder { background: var(--surface); border: 1px solid var(--warn); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--warn); margin-bottom: 12px; display: none; }
 
-  #study-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  #study-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   #study-counts { font-size: 14px; color: var(--text2); }
   #study-counts .n { font-weight: 600; color: var(--text); }
-  #study-add-btn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: border-color 0.15s; }
-  #study-add-btn:active { border-color: var(--text2); }
+
+  #study-stats { font-size: 12px; color: var(--text3); margin-bottom: 10px; min-height: 16px; }
+  #study-stats .stat-val { color: var(--text2); font-weight: 600; }
+  #study-stats .stat-streak { color: var(--warn); font-weight: 600; }
 
   #direction-row { display: flex; gap: 6px; margin-bottom: 16px; max-width: 480px; margin-left: auto; margin-right: auto; }
   .dir-btn { flex: 1; padding: 8px 6px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text3); font-size: 12px; font-weight: 500; cursor: pointer; text-align: center; transition: border-color 0.15s, color 0.15s; }
@@ -90,7 +92,6 @@
   .tap-hint { font-size: 12px; color: var(--text3); margin-top: 12px; }
   .back-answer { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--text); width: 100%; }
 
-  /* Grammar line — plain text, no chips */
   .back-grammar { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; margin-bottom: 10px; width: 100%; font-size: 12px; color: var(--text2); line-height: 1.6; }
   .gram-type { font-weight: 600; color: var(--text2); font-size: 12px; white-space: nowrap; }
   .gram-sep { color: var(--text3); padding: 0 2px; }
@@ -106,7 +107,7 @@
   .back-info-val { color: var(--text2); }
   .back-note { font-size: 13px; color: var(--text2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; margin-top: 8px; width: 100%; }
 
-  /* Rating row — tinted glass */
+  /* Rating row */
   #rating-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; max-width: 480px; margin: 0 auto 20px; }
   .rating-btn { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 14px; min-height: 56px; transition: transform 0.1s; border: 1px solid; background: transparent; }
   .rating-btn:active { transform: scale(0.96); }
@@ -116,9 +117,25 @@
   .rb-good  { color: var(--good);    border-color: var(--good);    }
   .rb-excel { color: var(--success); border-color: var(--success); }
 
+  /* Done state */
   #done-state { text-align: center; padding: 40px 20px; }
   #done-state .big-emoji { font-size: 52px; margin-bottom: 16px; }
   #done-state p { color: var(--text2); margin-bottom: 24px; }
+
+  /* Session complete state */
+  #session-complete-state { text-align: center; padding: 32px 16px; }
+  #session-complete-state .big-emoji { font-size: 52px; margin-bottom: 14px; }
+  #session-complete-state h2 { margin-bottom: 6px; }
+  #session-complete-sub { color: var(--text2); font-size: 14px; margin-bottom: 16px; }
+  .session-rating-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .session-rating-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 6px; }
+  .src-count { font-size: 22px; font-weight: 700; }
+  .src-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .src-again { color: var(--danger); border-color: rgba(224,91,91,0.3) !important; }
+  .src-hard  { color: var(--warn);   border-color: rgba(212,155,74,0.3) !important; }
+  .src-good  { color: var(--good);   border-color: rgba(74,141,212,0.3) !important; }
+  .src-excel { color: var(--success);border-color: rgba(76,175,125,0.3) !important; }
+  .session-actions { display: flex; flex-direction: column; gap: 8px; max-width: 480px; margin: 0 auto; }
 
   /* ── Chat section ── */
   #chat-section { max-width: 480px; margin: 0 auto; }
@@ -165,6 +182,16 @@
   #deck-no-cards { text-align: center; color: var(--text3); padding: 40px 0; font-size: 14px; }
 
   /* ── Cards list screen ── */
+  #cards-screen-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  #cards-screen-header h2 { margin-bottom: 0; }
+  .select-toggle { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; padding: 6px 12px; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .select-toggle.active { border-color: var(--text2); color: var(--text); }
+
+  .filter-row { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-chip { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color 0.15s, color 0.15s; white-space: nowrap; }
+  .filter-chip.active { border-color: var(--text2); color: var(--text); }
+
   .card-row { border-bottom: 1px solid var(--border); padding: 12px 0; cursor: pointer; display: flex; align-items: center; gap: 10px; }
   .card-row:active { opacity: 0.7; }
   .card-row-info { flex: 1; min-width: 0; }
@@ -173,6 +200,21 @@
   .card-row-meta { font-size: 11px; color: var(--text3); display: flex; gap: 8px; margin-top: 2px; flex-wrap: wrap; }
   .card-row-del { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px 8px; min-height: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center; }
   .card-row-del:active { color: var(--danger); }
+
+  .card-row-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: border-color 0.15s, background 0.15s; }
+  .card-row-check.checked { background: var(--text); border-color: var(--text); color: var(--bg); }
+
+  /* ── Day group view ── */
+  .day-group { margin-bottom: 8px; }
+  .day-group-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 0 8px; border-bottom: 1px solid var(--border); }
+  .day-group-label { font-size: 13px; font-weight: 600; color: var(--text2); }
+  .day-study-btn { font-size: 12px; color: var(--good); background: none; border: 1px solid rgba(74,141,212,0.35); border-radius: 6px; padding: 5px 12px; cursor: pointer; white-space: nowrap; }
+  .day-study-btn:active { opacity: 0.7; }
+
+  /* ── Floating study selected button ── */
+  #study-selected-btn { position: fixed; bottom: calc(var(--tab-h) + 16px); left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); border: none; border-radius: 24px; padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; display: none; box-shadow: 0 4px 24px rgba(0,0,0,0.6); z-index: 20; white-space: nowrap; }
+  #study-selected-btn.visible { display: block; }
+
   #no-cards { text-align: center; color: var(--text3); padding: 40px 0; font-size: 15px; }
 
   /* ── Level badge ── */
@@ -200,17 +242,25 @@
   .enrich-preview { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; font-size: 13px; color: var(--text2); line-height: 1.8; display: none; margin-top: 10px; }
   .enrich-preview b { color: var(--text); }
 
-  /* ── Pull to refresh ── */
-  #ptr-indicator { position: fixed; top: var(--tab-h); left: 0; right: 0; z-index: 40; display: flex; align-items: center; justify-content: center; height: 0; overflow: hidden; transition: height 0.1s; background: var(--bg); }
-  #ptr-indicator .ptr-inner { display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 13px; }
-  #ptr-arrow { font-size: 18px; transition: transform 0.2s; display: inline-block; }
-  #ptr-arrow.ready { transform: rotate(180deg); }
-  #ptr-spinner { display: none; }
+  /* ── Practice preset buttons ── */
+  .practice-presets { display: flex; gap: 8px; margin-top: 8px; }
+  .preset-btn { flex: 1; padding: 14px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; transition: border-color 0.15s; }
+  .preset-btn:active { border-color: var(--text2); transform: scale(0.97); }
 
-  /* ── Misc ── */
-  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--text2); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .select { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 15px; padding: 12px 14px; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%238888a0'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  /* ── History in practice modal ── */
+  .history-section { margin-top: 22px; }
+  .history-section-title { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; margin-bottom: 10px; }
+  .history-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .history-row:last-child { border-bottom: none; }
+  .history-row-info { flex: 1; min-width: 0; }
+  .history-row-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .history-row-meta { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .no-history { font-size: 13px; color: var(--text3); padding: 10px 0; }
+
+  /* ── Practice banner ── */
+  #practice-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+  #practice-banner.active { display: flex; }
+  #practice-stop-btn { font-size: 12px; color: var(--danger); background: none; border: 1px solid var(--danger); border-radius: 6px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
 
   /* ── Search overlay ── */
   #search-overlay { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: none; flex-direction: column; }
@@ -224,15 +274,17 @@
   .search-result-en { color: var(--text2); font-size: 13px; margin-top: 2px; }
   #search-empty { text-align: center; color: var(--text3); font-size: 14px; padding: 24px 0; display: none; }
 
-  /* ── Practice banner ── */
-  #practice-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text2); margin-bottom: 12px; }
-  #practice-banner.active { display: flex; }
-  #practice-stop-btn { font-size: 12px; color: var(--danger); background: none; border: 1px solid var(--danger); border-radius: 6px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+  /* ── Pull to refresh ── */
+  #ptr-indicator { position: fixed; top: var(--tab-h); left: 0; right: 0; z-index: 40; display: flex; align-items: center; justify-content: center; height: 0; overflow: hidden; transition: height 0.1s; background: var(--bg); }
+  #ptr-indicator .ptr-inner { display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 13px; }
+  #ptr-arrow { font-size: 18px; transition: transform 0.2s; display: inline-block; }
+  #ptr-arrow.ready { transform: rotate(180deg); }
+  #ptr-spinner { display: none; }
 
-  /* ── Practice preset buttons ── */
-  .practice-presets { display: flex; gap: 8px; margin-top: 8px; }
-  .preset-btn { flex: 1; padding: 14px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; transition: border-color 0.15s; }
-  .preset-btn:active { border-color: var(--text2); transform: scale(0.97); }
+  /* ── Misc ── */
+  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--text2); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .select { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 15px; padding: 12px 14px; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%238888a0'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 </style>
 </head>
 <body>
@@ -264,15 +316,17 @@
       </div>
       <div style="display:flex;align-items:center;gap:4px">
         <button class="btn-icon" id="study-delete-btn" onclick="deleteCurrentCard()" style="display:none;font-size:17px" title="Delete card">🗑</button>
-        <button class="btn-icon" onclick="openSearch()" title="Search cards" style="font-size:18px;color:var(--text2)">🔍</button>
-        <button class="btn-icon" onclick="openPracticeModal()" title="Practice session" style="font-size:18px;color:var(--text2)">⚡</button>
-        <button id="study-add-btn" onclick="openQuickAdd()">＋ Add word</button>
+        <button class="btn-icon" onclick="openSearch()" title="Search" style="font-size:18px">🔍</button>
+        <button class="btn-icon" onclick="openPracticeModal()" title="Practice / History" style="font-size:18px">⚡</button>
+        <button class="btn btn-secondary btn-sm" onclick="openQuickAdd()">＋ Add</button>
       </div>
     </div>
 
+    <div id="study-stats"></div>
+
     <div id="practice-banner">
       <span id="practice-info"></span>
-      <button id="practice-stop-btn" onclick="stopPractice()">Stop practice</button>
+      <button id="practice-stop-btn" onclick="stopPractice()">Stop</button>
     </div>
 
     <div id="direction-row">
@@ -310,7 +364,6 @@
         <button class="rating-btn rb-excel" onclick="rateCard(3)">Excellent<span class="interval" id="int-excel"></span></button>
       </div>
 
-      <!-- Chat -->
       <div id="chat-section">
         <hr class="chat-divider">
         <div class="chat-label">Ask AI</div>
@@ -331,6 +384,17 @@
       <p>All due cards reviewed.</p>
       <button class="btn btn-secondary" onclick="studyAhead()">Study ahead anyway</button>
     </div>
+
+    <div id="session-complete-state" style="display:none">
+      <div class="big-emoji">✅</div>
+      <h2>Session complete!</h2>
+      <p id="session-complete-sub" class="session-complete-sub"></p>
+      <div class="session-rating-grid" id="session-rating-grid"></div>
+      <div class="session-actions">
+        <button class="btn btn-primary btn-full" onclick="replayLastSession()">↩ Study again</button>
+        <button class="btn btn-secondary btn-full" onclick="finishSession()">Done</button>
+      </div>
+    </div>
   </section>
 
   <!-- ── Decks ── -->
@@ -345,12 +409,22 @@
 
   <!-- ── Cards ── -->
   <section id="screen-cards" class="screen">
-    <h2>All Cards</h2>
+    <div id="cards-screen-header">
+      <h2>Cards</h2>
+      <button class="select-toggle" id="select-toggle-btn" onclick="toggleCardSelectMode()">Select</button>
+    </div>
     <div class="field">
       <input class="input" id="search-input" type="search" placeholder="Search German or English…" oninput="renderCardsList()">
     </div>
+    <div class="filter-row">
+      <button class="filter-chip active" data-filter="all"       onclick="setCardsFilter('all')">All</button>
+      <button class="filter-chip"        data-filter="today"     onclick="setCardsFilter('today')">Added today</button>
+      <button class="filter-chip"        data-filter="week"      onclick="setCardsFilter('week')">This week</button>
+      <button class="filter-chip"        data-filter="struggling" onclick="setCardsFilter('struggling')">Struggling</button>
+      <button class="filter-chip"        data-filter="byday"     onclick="setCardsFilter('byday')">By day</button>
+    </div>
     <div id="cards-list"></div>
-    <div id="no-cards" style="display:none">No cards yet.</div>
+    <div id="no-cards" style="display:none">No cards.</div>
   </section>
 
   <!-- ── Settings ── -->
@@ -387,6 +461,9 @@
 
 </div><!-- /screens -->
 
+<!-- ── Floating study selected button ── -->
+<button id="study-selected-btn" onclick="studySelectedCards()"></button>
+
 <!-- ── Deck detail overlay ── -->
 <div id="deck-overlay">
   <div id="deck-overlay-header">
@@ -416,20 +493,24 @@
   </div>
 </div>
 
-<!-- ── Practice modal ── -->
+<!-- ── Practice modal (includes history) ── -->
 <div class="modal-overlay" id="practice-modal">
   <div class="modal">
     <div class="modal-header">
-      <h3>Practice session</h3>
+      <h3>Practice</h3>
       <button class="modal-close" onclick="closePracticeModal()">✕</button>
     </div>
-    <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Cards you rated Again or Hard are picked first, then never-reviewed, then Good/Excellent.</p>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:16px">Struggling cards first, then unreviewed, then Good/Excellent.</p>
     <label class="label">How many cards?</label>
     <div class="practice-presets">
       <button class="preset-btn" onclick="startPractice(10)">10</button>
       <button class="preset-btn" onclick="startPractice(20)">20</button>
       <button class="preset-btn" onclick="startPractice(50)">50</button>
       <button class="preset-btn" onclick="startPractice(9999)">All</button>
+    </div>
+    <div class="history-section">
+      <div class="history-section-title">RECENT SESSIONS</div>
+      <div id="practice-history-list"></div>
     </div>
   </div>
 </div>
@@ -488,8 +569,8 @@
 // Constants
 // ═══════════════════════════════════════════════════════
 const INTERVALS = [0, 1, 3, 7, 14, 30, 60];
-const DAY_MS = 86400000;
-const MIN_MS = 60000;
+const DAY_MS    = 86400000;
+const MIN_MS    = 60000;
 
 const CARD_SCHEMA = {
   type: 'object', additionalProperties: false, required: ['cards'],
@@ -550,18 +631,22 @@ Use "" (empty string) for any field that does not apply — never omit a field.`
 // ═══════════════════════════════════════════════════════
 // Storage
 // ═══════════════════════════════════════════════════════
-const loadCards    = () => { try { return JSON.parse(localStorage.getItem('cards')   || '[]'); } catch { return []; } };
-const saveCards    = a  => localStorage.setItem('cards',   JSON.stringify(a));
-const loadDecks    = () => { try { return JSON.parse(localStorage.getItem('decks')   || '[]'); } catch { return []; } };
-const saveDecks    = a  => localStorage.setItem('decks',   JSON.stringify(a));
-const loadSettings = () => { try { return JSON.parse(localStorage.getItem('settings')|| '{}'); } catch { return {}; } };
+const loadCards    = () => { try { return JSON.parse(localStorage.getItem('cards')    || '[]'); } catch { return []; } };
+const saveCards    = a  => localStorage.setItem('cards',    JSON.stringify(a));
+const loadDecks    = () => { try { return JSON.parse(localStorage.getItem('decks')    || '[]'); } catch { return []; } };
+const saveDecks    = a  => localStorage.setItem('decks',    JSON.stringify(a));
+const loadSettings = () => { try { return JSON.parse(localStorage.getItem('settings') || '{}'); } catch { return {}; } };
 const saveSettings = s  => localStorage.setItem('settings', JSON.stringify(s));
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const loadSessions = () => { try { return JSON.parse(localStorage.getItem('sessions') || '[]'); } catch { return []; } };
+const saveSessions = a  => localStorage.setItem('sessions', JSON.stringify(a));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
 // ═══════════════════════════════════════════════════════
 // SRS
 // ═══════════════════════════════════════════════════════
-const endOfToday = () => { const d = new Date(); d.setHours(23,59,59,999); return d.getTime(); };
+const endOfToday   = () => { const d = new Date(); d.setHours(23,59,59,999); return d.getTime(); };
+const startOfToday = () => { const d = new Date(); d.setHours(0,0,0,0);     return d.getTime(); };
+
 function computeNextLevel(level, rating) {
   if (rating === 0) return 0;
   if (rating === 1) return Math.max(1, level);
@@ -583,18 +668,23 @@ function intervalLabel(newLevel, rating) {
 // ═══════════════════════════════════════════════════════
 // App state
 // ═══════════════════════════════════════════════════════
-let currentCard   = null;
-let studyQueue    = [];
-let isFlipped     = false;
-let editingCardId = null;
-let currentDeckId = null;
-let chatHistory   = []; // in-memory only, resets per card
-let practiceMode  = false;
+let currentCard     = null;
+let studyQueue      = [];
+let isFlipped       = false;
+let editingCardId   = null;
+let currentDeckId   = null;
+let chatHistory     = [];
+let practiceMode    = false;
+let practiceSession = null; // { id, startTime, cardIds[], ratings{}, ratingCounts{} }
+let cardsFilter     = 'all';
+let cardSelectMode  = false;
+let selectedCardIds = new Set();
 
 // ═══════════════════════════════════════════════════════
 // Navigation
 // ═══════════════════════════════════════════════════════
 function showScreen(name) {
+  if (name !== 'cards' && cardSelectMode) exitCardSelectMode();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
@@ -603,6 +693,13 @@ function showScreen(name) {
   if (name === 'decks')    renderDecksList();
   if (name === 'cards')    renderCardsList();
   if (name === 'settings') loadSettingsUI();
+}
+
+function switchToStudyTab() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-study').classList.add('active');
+  document.querySelector('.tab[data-screen="study"]').classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -618,150 +715,91 @@ function setDirection(dir) {
 function buildStudyQueue(all = false) {
   const cards = loadCards();
   let due = all ? cards.slice() : cards.filter(c => c.due <= endOfToday());
-  // Weighted shuffle: lower-level cards tend earlier but aren't strictly first.
-  // A level-0 card scores 0–2, a level-3 card scores 3–5, so they interleave naturally.
   due.sort((a, b) => (a.level + Math.random() * 2) - (b.level + Math.random() * 2));
   return due;
 }
 
 function initStudy() {
   const cards = loadCards();
-  document.getElementById('due-count').textContent  = cards.filter(c => c.due <= endOfToday()).length;
+  document.getElementById('due-count').textContent   = cards.filter(c => c.due <= endOfToday()).length;
   document.getElementById('total-count').textContent = cards.length;
   const dir = getDirection();
   document.querySelectorAll('.dir-btn').forEach(b => b.classList.toggle('active', b.dataset.dir === dir));
   const s = loadSettings();
   document.getElementById('backup-reminder').style.display =
     s.lastExport && (Date.now() - s.lastExport > 14 * DAY_MS) ? 'block' : 'none';
-  if (!practiceMode) {
-    studyQueue = buildStudyQueue();
-    if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+  updateStudyStats();
+  if (practiceMode) return;
+  studyQueue = buildStudyQueue();
+  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+}
+
+function updateStudyStats() {
+  const cards = loadCards();
+  const sot = startOfToday();
+  const todayCount = cards.filter(c => c.lastReviewed && c.lastReviewed >= sot).length;
+  const streak = computeStreak(cards);
+  const el = document.getElementById('study-stats');
+  const parts = [];
+  if (todayCount > 0) parts.push(`<span class="stat-val">${todayCount}</span> reviewed today`);
+  if (streak >= 2)    parts.push(`<span class="stat-streak">🔥 ${streak} day streak</span>`);
+  el.innerHTML = parts.join(' &nbsp;·&nbsp; ');
+}
+
+function computeStreak(cards) {
+  const reviewDates = new Set();
+  cards.forEach(c => {
+    if (c.lastReviewed) {
+      const d = new Date(c.lastReviewed); d.setHours(0,0,0,0);
+      reviewDates.add(d.getTime());
+    }
+  });
+  const today = new Date(); today.setHours(0,0,0,0);
+  let check = new Date(today);
+  let streak = 0;
+  while (reviewDates.has(check.getTime())) { streak++; check.setDate(check.getDate() - 1); }
+  if (streak === 0) {
+    check = new Date(today); check.setDate(check.getDate() - 1);
+    while (reviewDates.has(check.getTime())) { streak++; check.setDate(check.getDate() - 1); }
   }
+  return streak;
 }
 
 function showCardState() {
   document.getElementById('card-state').style.display = '';
   document.getElementById('done-state').style.display = 'none';
+  document.getElementById('session-complete-state').style.display = 'none';
+}
+function showDoneState() {
+  document.getElementById('card-state').style.display = 'none';
+  document.getElementById('done-state').style.display = '';
+  document.getElementById('session-complete-state').style.display = 'none';
+  document.getElementById('study-delete-btn').style.display = 'none';
 }
 
-// Show a specific card immediately on the study screen (used after adding)
 function previewNewCard(card) {
-  // Switch to study tab without resetting the queue
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('screen-study').classList.add('active');
-  document.querySelector('.tab[data-screen="study"]').classList.add('active');
+  switchToStudyTab();
   const allCards = loadCards();
   document.getElementById('due-count').textContent   = allCards.filter(c => c.due <= endOfToday()).length;
   document.getElementById('total-count').textContent = allCards.length;
+  updateStudyStats();
   currentCard = card;
   showCardState();
   clearChat();
   showCard(card);
 }
-function showDoneState() {
-  document.getElementById('card-state').style.display = 'none';
-  document.getElementById('done-state').style.display = '';
-  document.getElementById('study-delete-btn').style.display = 'none';
-}
+
 function studyAhead() {
   studyQueue = buildStudyQueue(true);
   if (studyQueue.length) { showCardState(); nextCard(); }
 }
 
-// ═══════════════════════════════════════════════════════
-// Practice mode
-// ═══════════════════════════════════════════════════════
-function buildPracticeQueue(n) {
-  const cards = loadCards();
-  function priority(r) {
-    if (r === 0) return 0;   // Again first
-    if (r === 1) return 1;   // Hard
-    if (r == null) return 2; // Never rated
-    if (r === 2) return 3;   // Good
-    return 4;                // Excellent last
-  }
-  return cards.slice().sort((a, b) => {
-    const pd = priority(a.lastRating) - priority(b.lastRating);
-    if (pd !== 0) return pd;
-    return (a.due || 0) - (b.due || 0);
-  }).slice(0, n);
-}
-
-function openPracticeModal() {
-  document.getElementById('practice-modal').classList.add('open');
-}
-function closePracticeModal() {
-  document.getElementById('practice-modal').classList.remove('open');
-}
-function startPractice(n) {
-  closePracticeModal();
-  const queue = buildPracticeQueue(n);
-  if (!queue.length) return;
-  practiceMode = true;
-  studyQueue = queue;
-  const count = queue.length;
-  document.getElementById('practice-info').textContent = `⚡ Practice · ${count} card${count === 1 ? '' : 's'}`;
-  document.getElementById('practice-banner').classList.add('active');
-  showCardState();
-  nextCard();
-}
-function stopPractice() {
-  practiceMode = false;
-  document.getElementById('practice-banner').classList.remove('active');
-  studyQueue = buildStudyQueue();
-  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
-}
-
-// ═══════════════════════════════════════════════════════
-// Search overlay
-// ═══════════════════════════════════════════════════════
-function openSearch() {
-  document.getElementById('search-overlay').classList.add('open');
-  const input = document.getElementById('search-overlay-input');
-  input.value = '';
-  // Remove any dynamic result rows, leave the static #search-empty placeholder
-  const container = document.getElementById('search-results');
-  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
-  document.getElementById('search-empty').style.display = 'none';
-  setTimeout(() => input.focus(), 80);
-}
-function closeSearch() {
-  document.getElementById('search-overlay').classList.remove('open');
-}
-function runSearch(query) {
-  const q = query.trim().toLowerCase();
-  const container = document.getElementById('search-results');
-  const emptyEl = document.getElementById('search-empty');
-  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
-  if (!q) { emptyEl.style.display = 'none'; return; }
-
-  const cards = loadCards();
-  const decks = loadDecks();
-  const matches = cards.filter(c =>
-    c.de.toLowerCase().includes(q) || c.en.toLowerCase().includes(q)
-  ).slice(0, 60);
-
-  if (!matches.length) { emptyEl.style.display = ''; return; }
-  emptyEl.style.display = 'none';
-
-  const frag = document.createDocumentFragment();
-  matches.forEach(card => {
-    const deck = decks.find(d => d.id === card.deckId);
-    const row = document.createElement('div');
-    row.className = 'search-result-row';
-    row.innerHTML = `
-      <div class="search-result-de">${deHtml(card)}</div>
-      <div class="search-result-en">${esc(card.en)}${deck ? ` <span style="color:var(--text3)">· ${esc(deck.name)}</span>` : ''}</div>
-    `;
-    row.addEventListener('click', () => { closeSearch(); previewNewCard(card); });
-    frag.appendChild(row);
-  });
-  container.appendChild(frag);
-}
-
 function nextCard() {
-  if (!studyQueue.length) { showDoneState(); return; }
+  if (!studyQueue.length) {
+    if (practiceMode) showSessionComplete();
+    else showDoneState();
+    return;
+  }
   currentCard = studyQueue.shift();
   clearChat();
   showCard(currentCard);
@@ -808,10 +846,9 @@ function showCard(card) {
   document.getElementById('rating-row').style.display = 'none';
   const lvl = card.level;
   document.getElementById('int-again').textContent = intervalLabel(0, 0);
-  document.getElementById('int-hard').textContent  = intervalLabel(computeNextLevel(lvl,1), 1);
-  document.getElementById('int-good').textContent  = intervalLabel(computeNextLevel(lvl,2), 2);
-  document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl,3), 3);
-
+  document.getElementById('int-hard').textContent  = intervalLabel(computeNextLevel(lvl, 1), 1);
+  document.getElementById('int-good').textContent  = intervalLabel(computeNextLevel(lvl, 2), 2);
+  document.getElementById('int-excel').textContent = intervalLabel(computeNextLevel(lvl, 3), 3);
   document.getElementById('study-delete-btn').style.display = '';
 }
 
@@ -841,17 +878,21 @@ function rateCard(rating) {
   const idx = cards.findIndex(c => c.id === currentCard.id);
   if (idx !== -1) {
     const newLevel = computeNextLevel(currentCard.level, rating);
-    cards[idx].level = newLevel;
-    cards[idx].due = computeDue(newLevel, rating);
+    cards[idx].level        = newLevel;
+    cards[idx].due          = computeDue(newLevel, rating);
     cards[idx].lastReviewed = Date.now();
-    cards[idx].lastRating = rating;
+    cards[idx].lastRating   = rating;
     saveCards(cards);
+
+    if (practiceSession) {
+      practiceSession.ratings[currentCard.id] = rating;
+      practiceSession.ratingCounts[rating] = (practiceSession.ratingCounts[rating] || 0) + 1;
+    }
+
     if (rating === 0) {
-      // Re-insert 3–5 cards ahead so it doesn't come up immediately
       const pos = Math.min(studyQueue.length, Math.floor(Math.random() * 3) + 3);
       studyQueue.splice(pos, 0, { ...cards[idx] });
     } else if (practiceMode) {
-      // In practice mode, cycle all non-Again cards to end of queue
       studyQueue.push({ ...cards[idx] });
     }
   }
@@ -872,15 +913,13 @@ function renderGrammarLine(card) {
   el.style.display = '';
   parts.forEach((p, i) => {
     if (i > 0) { const s = document.createElement('span'); s.className = 'gram-sep'; s.textContent = '·'; el.appendChild(s); }
-    if (p.t === 'type') {
-      const s = document.createElement('span'); s.className = 'gram-type'; s.textContent = p.v; el.appendChild(s);
-    } else if (p.t === 'forms') {
-      const s = document.createElement('span'); s.className = 'gram-forms'; s.textContent = p.v; el.appendChild(s);
-    } else if (p.t === 'governs') {
-      const s = document.createElement('span'); s.className = 'gram-governs'; s.textContent = p.v; el.appendChild(s);
-    } else {
+    const s = document.createElement('span');
+    if (p.t === 'type')    { s.className = 'gram-type';    s.textContent = p.v; el.appendChild(s); }
+    else if (p.t === 'forms')   { s.className = 'gram-forms';   s.textContent = p.v; el.appendChild(s); }
+    else if (p.t === 'governs') { s.className = 'gram-governs'; s.textContent = p.v; el.appendChild(s); }
+    else {
       p.v.split(',').forEach(tag => {
-        const s = document.createElement('span'); s.className = 'gram-tag'; s.textContent = tag.trim(); el.appendChild(s);
+        const sp = document.createElement('span'); sp.className = 'gram-tag'; sp.textContent = tag.trim(); el.appendChild(sp);
       });
     }
   });
@@ -895,9 +934,228 @@ function renderInfoBlock(card) {
   ].filter(Boolean);
   if (!rows.length) { el.style.display = 'none'; return; }
   el.style.display = '';
-  el.innerHTML = rows.map(([k,v]) =>
+  el.innerHTML = rows.map(([k, v]) =>
     `<div class="back-info-row"><span class="back-info-label">${esc(k)}</span><span class="back-info-val">${esc(v)}</span></div>`
   ).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Practice mode
+// ═══════════════════════════════════════════════════════
+function buildPracticeQueue(n) {
+  const cards = loadCards();
+  function priority(r) {
+    if (r === 0)    return 0;
+    if (r === 1)    return 1;
+    if (r == null)  return 2;
+    if (r === 2)    return 3;
+    return 4;
+  }
+  return cards.slice().sort((a, b) => {
+    const pd = priority(a.lastRating) - priority(b.lastRating);
+    if (pd !== 0) return pd;
+    return (a.due || 0) - (b.due || 0);
+  }).slice(0, n);
+}
+
+function openPracticeModal() {
+  document.getElementById('practice-modal').classList.add('open');
+  renderSessionHistory();
+}
+function closePracticeModal() {
+  document.getElementById('practice-modal').classList.remove('open');
+}
+
+function startPractice(n) {
+  closePracticeModal();
+  const queue = buildPracticeQueue(n);
+  if (!queue.length) return;
+  launchPracticeQueue(queue);
+}
+
+function launchPracticeQueue(queue) {
+  practiceMode = true;
+  practiceSession = {
+    id: uid(),
+    startTime: Date.now(),
+    cardIds: queue.map(c => c.id),
+    ratings: {},
+    ratingCounts: { 0: 0, 1: 0, 2: 0, 3: 0 }
+  };
+  studyQueue = queue.slice();
+  const count = queue.length;
+  document.getElementById('practice-info').textContent = `⚡ Practice · ${count} card${count !== 1 ? 's' : ''}`;
+  document.getElementById('practice-banner').classList.add('active');
+  showCardState();
+  nextCard();
+}
+
+function stopPractice() {
+  autoSaveSession();
+  practiceMode = false;
+  practiceSession = null;
+  document.getElementById('practice-banner').classList.remove('active');
+  studyQueue = buildStudyQueue();
+  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+  updateStudyStats();
+}
+
+// ═══════════════════════════════════════════════════════
+// Sessions
+// ═══════════════════════════════════════════════════════
+function autoSaveSession() {
+  if (!practiceSession) return;
+  const ratedCount = Object.keys(practiceSession.ratings).length;
+  if (ratedCount < 1) return;
+  const sessions = loadSessions();
+  sessions.unshift({
+    id:           practiceSession.id,
+    name:         formatSessionDate(practiceSession.startTime),
+    date:         practiceSession.startTime,
+    cardIds:      practiceSession.cardIds,
+    ratings:      practiceSession.ratings,
+    ratingCounts: practiceSession.ratingCounts,
+    completedAt:  Date.now()
+  });
+  if (sessions.length > 50) sessions.splice(50);
+  saveSessions(sessions);
+}
+
+function showSessionComplete() {
+  autoSaveSession();
+  practiceMode = false;
+  document.getElementById('practice-banner').classList.remove('active');
+  document.getElementById('card-state').style.display = 'none';
+  document.getElementById('done-state').style.display = 'none';
+  document.getElementById('session-complete-state').style.display = '';
+  document.getElementById('study-delete-btn').style.display = 'none';
+
+  const rc = practiceSession?.ratingCounts || {};
+  const total = Object.values(rc).reduce((a, b) => a + b, 0);
+  document.getElementById('session-complete-sub').textContent =
+    `${total} card${total !== 1 ? 's' : ''} reviewed`;
+
+  document.getElementById('session-rating-grid').innerHTML = [
+    { label: 'Again', cls: 'src-again', key: 0 },
+    { label: 'Hard',  cls: 'src-hard',  key: 1 },
+    { label: 'Good',  cls: 'src-good',  key: 2 },
+    { label: 'Excel', cls: 'src-excel', key: 3 },
+  ].map(r => `
+    <div class="session-rating-cell ${r.cls}">
+      <div class="src-count">${rc[r.key] || 0}</div>
+      <div class="src-label">${r.label}</div>
+    </div>
+  `).join('');
+
+  updateStudyStats();
+}
+
+function replayLastSession() {
+  if (!practiceSession) { finishSession(); return; }
+  const allCards = loadCards();
+  const queue = practiceSession.cardIds.map(id => allCards.find(c => c.id === id)).filter(Boolean);
+  if (!queue.length) { finishSession(); return; }
+  document.getElementById('session-complete-state').style.display = 'none';
+  launchPracticeQueue(queue);
+}
+
+function finishSession() {
+  practiceSession = null;
+  document.getElementById('session-complete-state').style.display = 'none';
+  studyQueue = buildStudyQueue();
+  if (studyQueue.length === 0) showDoneState(); else { showCardState(); nextCard(); }
+  updateStudyStats();
+}
+
+function replaySession(sessionId) {
+  const session = loadSessions().find(s => s.id === sessionId);
+  if (!session) return;
+  closePracticeModal();
+  const allCards = loadCards();
+  const queue = (session.cardIds || []).map(id => allCards.find(c => c.id === id)).filter(Boolean);
+  if (!queue.length) { alert('No cards found — they may have been deleted.'); return; }
+  launchPracticeQueue(queue);
+}
+
+function renderSessionHistory() {
+  const sessions = loadSessions();
+  const container = document.getElementById('practice-history-list');
+  if (!sessions.length) {
+    container.innerHTML = '<div class="no-history">No sessions yet — complete a practice run to save one.</div>';
+    return;
+  }
+  container.innerHTML = sessions.slice(0, 6).map(s => {
+    const rc = s.ratingCounts || {};
+    const total = (s.cardIds || []).length;
+    const rated = Object.values(rc).reduce((a, b) => a + b, 0);
+    const meta = rated
+      ? `${total} cards · ${rc[0]||0} again · ${rc[1]||0} hard · ${rc[2]||0} good · ${rc[3]||0} excel`
+      : `${total} cards`;
+    return `
+      <div class="history-row">
+        <div class="history-row-info">
+          <div class="history-row-name">${esc(s.name || formatSessionDate(s.date))}</div>
+          <div class="history-row-meta">${esc(meta)}</div>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="replaySession('${s.id}')">Replay</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatSessionDate(ts) {
+  const d = new Date(ts);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const time   = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  const today     = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+  const sessDay   = new Date(d);    sessDay.setHours(0,0,0,0);
+  if (sessDay.getTime() === today.getTime())     return `Today · ${time}`;
+  if (sessDay.getTime() === yesterday.getTime()) return `Yesterday · ${time}`;
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()} · ${time}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// Search overlay
+// ═══════════════════════════════════════════════════════
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  const input = document.getElementById('search-overlay-input');
+  input.value = '';
+  const container = document.getElementById('search-results');
+  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
+  document.getElementById('search-empty').style.display = 'none';
+  setTimeout(() => input.focus(), 80);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+}
+function runSearch(query) {
+  const q = query.trim().toLowerCase();
+  const container = document.getElementById('search-results');
+  const emptyEl = document.getElementById('search-empty');
+  Array.from(container.children).forEach(el => { if (!el.id) el.remove(); });
+  if (!q) { emptyEl.style.display = 'none'; return; }
+  const cards = loadCards(), decks = loadDecks();
+  const matches = cards.filter(c =>
+    c.de.toLowerCase().includes(q) || c.en.toLowerCase().includes(q)
+  ).slice(0, 60);
+  if (!matches.length) { emptyEl.style.display = ''; return; }
+  emptyEl.style.display = 'none';
+  const frag = document.createDocumentFragment();
+  matches.forEach(card => {
+    const deck = decks.find(d => d.id === card.deckId);
+    const row = document.createElement('div');
+    row.className = 'search-result-row';
+    row.innerHTML = `
+      <div class="search-result-de">${deHtml(card)}</div>
+      <div class="search-result-en">${esc(card.en)}${deck ? ` <span style="color:var(--text3)">· ${esc(deck.name)}</span>` : ''}</div>
+    `;
+    row.addEventListener('click', () => { closeSearch(); previewNewCard(card); });
+    frag.appendChild(row);
+  });
+  container.appendChild(frag);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -947,11 +1205,9 @@ async function sendChatMessage() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
-
   const s = loadSettings();
   const errEl = document.getElementById('chat-error');
   errEl.style.display = 'none';
-
   if (!s.apiKey) { errEl.textContent = 'No API key — add it in Settings.'; errEl.style.display = 'block'; return; }
   if (!navigator.onLine) { errEl.textContent = "You're offline."; errEl.style.display = 'block'; return; }
 
@@ -959,15 +1215,13 @@ async function sendChatMessage() {
   input.value = '';
   renderChatMessages();
   appendTypingIndicator();
-
   const btn = document.getElementById('chat-send');
   btn.disabled = true;
 
   const c = currentCard;
   const contextLines = [
-    `German: ${c.de}`,
-    `English: ${c.en}`,
-    c.forms   ? `Forms: ${c.forms}`   : '',
+    `German: ${c.de}`, `English: ${c.en}`,
+    c.forms   ? `Forms: ${c.forms}`     : '',
     c.grammar ? `Grammar: ${c.grammar}` : '',
     c.governs ? `Governs: ${c.governs}` : '',
     c.example ? `Example: ${c.example}` : '',
@@ -985,16 +1239,14 @@ async function sendChatMessage() {
       })
     });
     if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d?.error?.message || `HTTP ${res.status}`); }
-    const data = await res.json();
+    const data  = await res.json();
     const reply = data.choices?.[0]?.message?.content || '(no response)';
     chatHistory.push({ role: 'assistant', content: reply });
     renderChatMessages();
   } catch (e) {
-    // remove last user message on error so they can retry
     chatHistory.pop();
     renderChatMessages();
-    errEl.textContent = e.message;
-    errEl.style.display = 'block';
+    errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
     document.getElementById('chat-typing')?.remove();
     btn.disabled = false;
@@ -1007,71 +1259,52 @@ document.getElementById('chat-input').addEventListener('keydown', e => {
 });
 
 // ═══════════════════════════════════════════════════════
-// Quick-add (from study screen)
+// Quick-add
 // ═══════════════════════════════════════════════════════
 function openQuickAdd() {
   const decks = loadDecks();
-  const sel = document.getElementById('qa-deck-select');
+  const sel   = document.getElementById('qa-deck-select');
   const noDecks = document.getElementById('qa-no-decks');
-  const btn = document.getElementById('qa-submit-btn');
+  const btn   = document.getElementById('qa-submit-btn');
   sel.innerHTML = '';
-  if (decks.length === 0) {
-    noDecks.style.display = '';
-    sel.style.display = 'none';
-    btn.disabled = true;
+  if (!decks.length) {
+    noDecks.style.display = ''; sel.style.display = 'none'; btn.disabled = true;
   } else {
-    noDecks.style.display = 'none';
-    sel.style.display = '';
-    btn.disabled = false;
-    decks.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d.id; opt.textContent = d.name;
-      sel.appendChild(opt);
-    });
+    noDecks.style.display = 'none'; sel.style.display = ''; btn.disabled = false;
+    decks.forEach(d => { const o = document.createElement('option'); o.value = d.id; o.textContent = d.name; sel.appendChild(o); });
   }
   document.getElementById('qa-word-input').value = '';
   document.getElementById('qa-error').style.display = 'none';
   document.getElementById('quick-add-modal').classList.add('open');
   setTimeout(() => document.getElementById('qa-word-input').focus(), 100);
 }
-
-function closeQuickAdd() {
-  document.getElementById('quick-add-modal').classList.remove('open');
-}
+function closeQuickAdd() { document.getElementById('quick-add-modal').classList.remove('open'); }
 
 async function quickAddSubmit() {
-  const word = document.getElementById('qa-word-input').value.trim();
+  const word   = document.getElementById('qa-word-input').value.trim();
   const deckId = document.getElementById('qa-deck-select').value;
-  const errEl = document.getElementById('qa-error');
+  const errEl  = document.getElementById('qa-error');
   errEl.style.display = 'none';
   if (!word) return;
-
   const btn = document.getElementById('qa-submit-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>';
-
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
   try {
     const results = await callOpenAI(word);
     const card = processAddedCards(results, deckId);
     closeQuickAdd();
     previewNewCard(card);
   } catch (e) {
-    errEl.textContent = e.message;
-    errEl.style.display = 'block';
+    errEl.textContent = e.message; errEl.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Add card';
+    btn.disabled = false; btn.textContent = 'Add card';
   }
 }
 
-document.getElementById('qa-word-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') quickAddSubmit();
-});
+document.getElementById('qa-word-input').addEventListener('keydown', e => { if (e.key === 'Enter') quickAddSubmit(); });
 document.getElementById('quick-add-modal').addEventListener('click', function(e) { if (e.target === this) closeQuickAdd(); });
 
 // ═══════════════════════════════════════════════════════
-// Card dedup helper — called after AI returns results
-// Skips adding if both de+en already exist; reschedules existing card instead.
+// OpenAI
 // ═══════════════════════════════════════════════════════
 function processAddedCards(results, deckId) {
   const cards = loadCards();
@@ -1100,9 +1333,6 @@ function processAddedCards(results, deckId) {
   return firstCard;
 }
 
-// ═══════════════════════════════════════════════════════
-// OpenAI — shared card generation
-// ═══════════════════════════════════════════════════════
 async function callOpenAI(userMessage) {
   const s = loadSettings();
   if (!s.apiKey) throw new Error('No API key — add it in Settings.');
@@ -1137,7 +1367,7 @@ function renderDecksList() {
   list.innerHTML = '';
   document.getElementById('no-decks').style.display = decks.length === 0 ? '' : 'none';
   decks.forEach(deck => {
-    const dc = cards.filter(c => c.deckId === deck.id);
+    const dc  = cards.filter(c => c.deckId === deck.id);
     const due = dc.filter(c => c.due <= eod).length;
     const div = document.createElement('div');
     div.className = 'deck-row';
@@ -1166,7 +1396,7 @@ function createDeck() {
 function deleteDeck() {
   if (!currentDeckId) return;
   const decks = loadDecks(), cards = loadCards();
-  const deck = decks.find(d => d.id === currentDeckId);
+  const deck  = decks.find(d => d.id === currentDeckId);
   if (!deck) return;
   const count = cards.filter(c => c.deckId === currentDeckId).length;
   if (!confirm(`Delete "${deck.name}" and its ${count} card${count !== 1 ? 's' : ''}?`)) return;
@@ -1176,7 +1406,6 @@ function deleteDeck() {
   renderDecksList();
 }
 
-// ── Deck detail ──
 function openDeckOverlay(deckId) {
   currentDeckId = deckId;
   const deck = loadDecks().find(d => d.id === deckId);
@@ -1190,7 +1419,7 @@ function closeDeckOverlay() { document.getElementById('deck-overlay').classList.
 
 function renderDeckCards() {
   const cards = loadCards().filter(c => c.deckId === currentDeckId).reverse();
-  const list = document.getElementById('deck-cards-list');
+  const list  = document.getElementById('deck-cards-list');
   list.innerHTML = '';
   document.getElementById('deck-no-cards').style.display = cards.length === 0 ? '' : 'none';
   cards.forEach(card => {
@@ -1217,7 +1446,7 @@ function deleteDeckCard(e, id) {
 }
 
 async function addWordToDeck() {
-  const word = document.getElementById('add-word-input').value.trim();
+  const word  = document.getElementById('add-word-input').value.trim();
   const errEl = document.getElementById('add-word-error');
   errEl.style.display = 'none';
   if (!word) return;
@@ -1239,36 +1468,207 @@ async function addWordToDeck() {
 document.getElementById('add-word-input').addEventListener('keydown', e => { if (e.key === 'Enter') addWordToDeck(); });
 
 // ═══════════════════════════════════════════════════════
-// Cards list
+// Cards screen — filters, select mode, day groups
 // ═══════════════════════════════════════════════════════
+function setCardsFilter(filter) {
+  cardsFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(b =>
+    b.classList.toggle('active', b.dataset.filter === filter)
+  );
+  renderCardsList();
+}
+
+function toggleCardSelectMode() {
+  cardSelectMode = !cardSelectMode;
+  if (!cardSelectMode) exitCardSelectMode(); else enterCardSelectMode();
+}
+
+function enterCardSelectMode() {
+  cardSelectMode = true;
+  selectedCardIds.clear();
+  const btn = document.getElementById('select-toggle-btn');
+  btn.textContent = 'Done'; btn.classList.add('active');
+  renderCardsList();
+}
+
+function exitCardSelectMode() {
+  cardSelectMode = false;
+  selectedCardIds.clear();
+  const btn = document.getElementById('select-toggle-btn');
+  if (btn) { btn.textContent = 'Select'; btn.classList.remove('active'); }
+  document.getElementById('study-selected-btn').classList.remove('visible');
+  renderCardsList();
+}
+
+function toggleCardSelection(id) {
+  if (selectedCardIds.has(id)) selectedCardIds.delete(id);
+  else selectedCardIds.add(id);
+
+  const btn = document.getElementById('study-selected-btn');
+  if (selectedCardIds.size > 0) {
+    btn.textContent = `Study ${selectedCardIds.size} selected`;
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+  const checkEl = document.querySelector(`.card-row-check[data-id="${id}"]`);
+  if (checkEl) {
+    const checked = selectedCardIds.has(id);
+    checkEl.classList.toggle('checked', checked);
+    checkEl.textContent = checked ? '✓' : '';
+  }
+}
+
+function studySelectedCards() {
+  if (!selectedCardIds.size) return;
+  const allCards = loadCards();
+  const queue = Array.from(selectedCardIds).map(id => allCards.find(c => c.id === id)).filter(Boolean);
+  if (!queue.length) return;
+  exitCardSelectMode();
+  switchToStudyTab();
+  const allC = loadCards();
+  document.getElementById('due-count').textContent   = allC.filter(c => c.due <= endOfToday()).length;
+  document.getElementById('total-count').textContent = allC.length;
+  updateStudyStats();
+  launchPracticeQueue(queue);
+}
+
+function studyDayBatch(dayTs) {
+  const ts = parseInt(dayTs, 10);
+  const allCards = loadCards();
+  const queue = allCards.filter(c => {
+    const d = new Date(c.added || 0); d.setHours(0,0,0,0);
+    return d.getTime() === ts;
+  });
+  if (!queue.length) return;
+  switchToStudyTab();
+  const allC = loadCards();
+  document.getElementById('due-count').textContent   = allC.filter(c => c.due <= endOfToday()).length;
+  document.getElementById('total-count').textContent = allC.length;
+  updateStudyStats();
+  launchPracticeQueue(queue);
+}
+
 function renderCardsList() {
   const q = (document.getElementById('search-input')?.value || '').toLowerCase();
   const decks = loadDecks();
   let cards = loadCards().slice().reverse();
   if (q) cards = cards.filter(c => c.de.toLowerCase().includes(q) || c.en.toLowerCase().includes(q));
+
+  const sot = startOfToday();
+  if (cardsFilter === 'today')     cards = cards.filter(c => (c.added || 0) >= sot);
+  else if (cardsFilter === 'week') cards = cards.filter(c => (c.added || 0) >= sot - 6 * DAY_MS);
+  else if (cardsFilter === 'struggling') cards = cards.filter(c => c.level <= 1);
+
   const list = document.getElementById('cards-list');
   list.innerHTML = '';
+
+  if (cardsFilter === 'byday') {
+    renderCardsByDay(cards, decks);
+    document.getElementById('no-cards').style.display = 'none';
+    return;
+  }
+
   document.getElementById('no-cards').style.display = cards.length === 0 ? '' : 'none';
+
+  const frag = document.createDocumentFragment();
   cards.forEach(card => {
     const deck = decks.find(d => d.id === card.deckId);
-    const due = new Date(card.due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    const div = document.createElement('div');
+    const div  = document.createElement('div');
     div.className = 'card-row';
-    div.innerHTML = `
-      <div class="card-row-info">
-        <div class="card-row-de">${deHtml(card)}</div>
-        <div class="card-row-en">${esc(card.en)}</div>
-        <div class="card-row-meta">
-          <span class="level-badge level-${card.level}">L${card.level}</span>
-          ${deck ? `<span style="color:var(--text2)">${esc(deck.name)}</span>` : ''}
-          <span>due ${due}</span>
+
+    if (cardSelectMode) {
+      const checked = selectedCardIds.has(card.id);
+      div.innerHTML = `
+        <div class="card-row-check ${checked ? 'checked' : ''}" data-id="${card.id}">${checked ? '✓' : ''}</div>
+        <div class="card-row-info">
+          <div class="card-row-de">${deHtml(card)}</div>
+          <div class="card-row-en">${esc(card.en)}</div>
+          <div class="card-row-meta">
+            <span class="level-badge level-${card.level}">L${card.level}</span>
+            ${deck ? `<span style="color:var(--text2)">${esc(deck.name)}</span>` : ''}
+          </div>
         </div>
-      </div>
-      <button class="card-row-del" onclick="deleteCard(event,'${card.id}')">🗑</button>
-    `;
-    div.addEventListener('click', e => { if (!e.target.closest('.card-row-del')) openEditModal(card.id); });
-    list.appendChild(div);
+      `;
+      div.addEventListener('click', () => toggleCardSelection(card.id));
+    } else {
+      const due = new Date(card.due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      div.innerHTML = `
+        <div class="card-row-info">
+          <div class="card-row-de">${deHtml(card)}</div>
+          <div class="card-row-en">${esc(card.en)}</div>
+          <div class="card-row-meta">
+            <span class="level-badge level-${card.level}">L${card.level}</span>
+            ${deck ? `<span style="color:var(--text2)">${esc(deck.name)}</span>` : ''}
+            <span>due ${due}</span>
+          </div>
+        </div>
+        <button class="card-row-del" onclick="deleteCard(event,'${card.id}')">🗑</button>
+      `;
+      div.addEventListener('click', e => { if (!e.target.closest('.card-row-del')) openEditModal(card.id); });
+    }
+    frag.appendChild(div);
   });
+  list.appendChild(frag);
+}
+
+function renderCardsByDay(cards, decks) {
+  const list = document.getElementById('cards-list');
+  const groups = new Map();
+  cards.forEach(card => {
+    const d = new Date(card.added || 0); d.setHours(0,0,0,0);
+    const key = d.getTime();
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(card);
+  });
+
+  const sorted = Array.from(groups.entries()).sort((a, b) => b[0] - a[0]);
+  if (!sorted.length) { document.getElementById('no-cards').style.display = ''; return; }
+
+  const frag = document.createDocumentFragment();
+  sorted.forEach(([ts, dayCards]) => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'day-group';
+
+    const header = document.createElement('div');
+    header.className = 'day-group-header';
+    header.innerHTML = `
+      <span class="day-group-label">${esc(formatAddedDate(ts))}</span>
+      <button class="day-study-btn" onclick="studyDayBatch('${ts}')">Study these ${dayCards.length}</button>
+    `;
+    groupDiv.appendChild(header);
+
+    dayCards.forEach(card => {
+      const deck = decks.find(d => d.id === card.deckId);
+      const div  = document.createElement('div');
+      div.className = 'card-row';
+      div.innerHTML = `
+        <div class="card-row-info">
+          <div class="card-row-de">${deHtml(card)}</div>
+          <div class="card-row-en">${esc(card.en)}</div>
+          <div class="card-row-meta">
+            <span class="level-badge level-${card.level}">L${card.level}</span>
+            ${deck ? `<span style="color:var(--text2)">${esc(deck.name)}</span>` : ''}
+          </div>
+        </div>
+      `;
+      div.addEventListener('click', () => openEditModal(card.id));
+      groupDiv.appendChild(div);
+    });
+
+    frag.appendChild(groupDiv);
+  });
+  list.appendChild(frag);
+}
+
+function formatAddedDate(ts) {
+  const d       = new Date(ts);
+  const months  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+  if (ts === today.getTime())     return 'Today';
+  if (ts === yesterday.getTime()) return 'Yesterday';
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
 function deleteCard(e, id) {
@@ -1287,9 +1687,9 @@ function openEditModal(id) {
   editingCardId = id;
   document.getElementById('edit-de').value    = card.de;
   document.getElementById('edit-en').value    = card.en;
-  document.getElementById('edit-ex').value    = card.example     || '';
-  document.getElementById('edit-ex-en').value = card.example_en  || '';
-  document.getElementById('edit-note').value  = card.note        || '';
+  document.getElementById('edit-ex').value    = card.example    || '';
+  document.getElementById('edit-ex-en').value = card.example_en || '';
+  document.getElementById('edit-note').value  = card.note       || '';
   showEnrichPreview(card);
   document.getElementById('enrich-error').style.display = 'none';
   document.getElementById('edit-modal').classList.add('open');
@@ -1298,17 +1698,17 @@ function openEditModal(id) {
 function showEnrichPreview(card) {
   const el = document.getElementById('enrich-preview');
   const fields = [
-    card.word_type    && ['Type',        card.word_type],
-    card.forms        && ['Forms',       card.forms],
-    card.grammar      && ['Grammar',     card.grammar],
-    card.governs      && ['Governs',     card.governs],
-    card.alternatives && ['Also',        card.alternatives],
-    card.collocations && ['Collocations',card.collocations],
-    card.register     && ['Register',    card.register],
+    card.word_type    && ['Type',         card.word_type],
+    card.forms        && ['Forms',        card.forms],
+    card.grammar      && ['Grammar',      card.grammar],
+    card.governs      && ['Governs',      card.governs],
+    card.alternatives && ['Also',         card.alternatives],
+    card.collocations && ['Collocations', card.collocations],
+    card.register     && ['Register',     card.register],
   ].filter(Boolean);
   if (!fields.length) { el.style.display = 'none'; return; }
   el.style.display = '';
-  el.innerHTML = fields.map(([k,v]) => `<b>${esc(k)}:</b> ${esc(v)}<br>`).join('');
+  el.innerHTML = fields.map(([k, v]) => `<b>${esc(k)}:</b> ${esc(v)}<br>`).join('');
 }
 
 function closeEditModal() { document.getElementById('edit-modal').classList.remove('open'); editingCardId = null; }
@@ -1317,8 +1717,8 @@ function saveEdit() {
   const cards = loadCards();
   const idx = cards.findIndex(c => c.id === editingCardId);
   if (idx === -1) { closeEditModal(); return; }
-  cards[idx].de = document.getElementById('edit-de').value.trim();
-  cards[idx].en = document.getElementById('edit-en').value.trim();
+  cards[idx].de         = document.getElementById('edit-de').value.trim();
+  cards[idx].en         = document.getElementById('edit-en').value.trim();
   cards[idx].example    = document.getElementById('edit-ex').value.trim();
   cards[idx].example_en = document.getElementById('edit-ex-en').value.trim();
   cards[idx].note       = document.getElementById('edit-note').value.trim();
@@ -1341,9 +1741,9 @@ function resetProgress() {
 
 async function enrichCard() {
   const cards = loadCards();
-  const idx = cards.findIndex(c => c.id === editingCardId);
+  const idx   = cards.findIndex(c => c.id === editingCardId);
   if (idx === -1) return;
-  const btn = document.getElementById('enrich-btn');
+  const btn   = document.getElementById('enrich-btn');
   const errEl = document.getElementById('enrich-error');
   errEl.style.display = 'none';
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
@@ -1351,10 +1751,10 @@ async function enrichCard() {
     const de = document.getElementById('edit-de').value.trim() || cards[idx].de;
     const en = document.getElementById('edit-en').value.trim() || cards[idx].en;
     const [c] = await callOpenAI(`${de} / ${en}`);
-    cards[idx].word_type = c.word_type; cards[idx].forms = c.forms;
-    cards[idx].grammar = c.grammar; cards[idx].governs = c.governs;
+    cards[idx].word_type    = c.word_type;    cards[idx].forms      = c.forms;
+    cards[idx].grammar      = c.grammar;      cards[idx].governs    = c.governs;
     cards[idx].alternatives = c.alternatives; cards[idx].collocations = c.collocations;
-    cards[idx].register = c.register; cards[idx].gender = c.gender;
+    cards[idx].register     = c.register;     cards[idx].gender      = c.gender;
     if (!cards[idx].example)    cards[idx].example    = c.example;
     if (!cards[idx].example_en) cards[idx].example_en = c.example_en;
     if (!cards[idx].note)       cards[idx].note        = c.note;
@@ -1398,15 +1798,15 @@ function deHtml(card) {
 function loadSettingsUI() {
   const s = loadSettings();
   document.getElementById('api-key').value            = s.apiKey || '';
-  document.getElementById('model-name').value         = s.model || 'gpt-4.1-mini';
+  document.getElementById('model-name').value         = s.model  || 'gpt-4.1-mini';
   document.getElementById('extra-instructions').value = s.extraInstructions || '';
   document.getElementById('last-export-info').textContent = s.lastExport
     ? `Last exported: ${new Date(s.lastExport).toLocaleDateString()}` : 'No backup yet.';
 }
 function saveSettingsFromUI() {
   const s = loadSettings();
-  s.apiKey = document.getElementById('api-key').value.trim();
-  s.model  = document.getElementById('model-name').value.trim() || 'gpt-4.1-mini';
+  s.apiKey            = document.getElementById('api-key').value.trim();
+  s.model             = document.getElementById('model-name').value.trim() || 'gpt-4.1-mini';
   s.extraInstructions = document.getElementById('extra-instructions').value.trim();
   saveSettings(s);
 }
@@ -1416,9 +1816,9 @@ function saveSettingsFromUI() {
 
 function exportCards() {
   saveSettingsFromUI();
-  const blob = new Blob([JSON.stringify({ decks: loadDecks(), cards: loadCards() }, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url;
+  const blob = new Blob([JSON.stringify({ decks: loadDecks(), cards: loadCards(), sessions: loadSessions() }, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url;
   a.download = `karten-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(url);
   const s = loadSettings(); s.lastExport = Date.now(); saveSettings(s);
@@ -1431,16 +1831,21 @@ function importCards(e) {
   reader.onload = ev => {
     try {
       const data = JSON.parse(ev.target.result);
-      const importedCards = Array.isArray(data) ? data : (data.cards || []);
-      const importedDecks = Array.isArray(data) ? [] : (data.decks || []);
-      const existing = loadCards(), existingDecks = loadDecks();
-      const cIds = new Set(existing.map(c => c.id)), dIds = new Set(existingDecks.map(d => d.id));
-      const newDecks = importedDecks.filter(d => d.id && !dIds.has(d.id));
-      const newCards = importedCards.filter(c => c.id && !cIds.has(c.id));
+      const importedCards    = Array.isArray(data) ? data : (data.cards    || []);
+      const importedDecks    = Array.isArray(data) ? []   : (data.decks    || []);
+      const importedSessions = Array.isArray(data) ? []   : (data.sessions || []);
+      const existing = loadCards(), existingDecks = loadDecks(), existingSessions = loadSessions();
+      const cIds = new Set(existing.map(c => c.id));
+      const dIds = new Set(existingDecks.map(d => d.id));
+      const sIds = new Set(existingSessions.map(s => s.id));
+      const newCards    = importedCards.filter(c => c.id && !cIds.has(c.id));
+      const newDecks    = importedDecks.filter(d => d.id && !dIds.has(d.id));
+      const newSessions = importedSessions.filter(s => s.id && !sIds.has(s.id));
       saveDecks([...existingDecks, ...newDecks]);
       saveCards([...existing, ...newCards]);
+      saveSessions([...newSessions, ...existingSessions]);
       const res = document.getElementById('import-result');
-      res.textContent = `Imported ${newCards.length} card(s) and ${newDecks.length} deck(s). (Duplicates skipped.)`;
+      res.textContent = `Imported ${newCards.length} card(s), ${newDecks.length} deck(s), ${newSessions.length} session(s). (Duplicates skipped.)`;
       res.style.display = 'block';
       setTimeout(() => { res.style.display = 'none'; }, 4000);
     } catch (err) { alert('Import failed: ' + err.message); }
@@ -1450,9 +1855,9 @@ function importCards(e) {
 }
 
 function clearAllData() {
-  if (!confirm('Delete ALL cards and decks? This cannot be undone.')) return;
+  if (!confirm('Delete ALL cards, decks and sessions? This cannot be undone.')) return;
   if (!confirm('Are you sure? All progress will be lost.')) return;
-  saveCards([]); saveDecks([]);
+  saveCards([]); saveDecks([]); saveSessions([]);
   alert('All data deleted.');
 }
 
@@ -1463,9 +1868,9 @@ function clearAllData() {
   const THRESHOLD = 72;
   let startY = 0, pulling = false, triggered = false;
   const indicator = document.getElementById('ptr-indicator');
-  const arrow = document.getElementById('ptr-arrow');
-  const spinner = document.getElementById('ptr-spinner');
-  const label = document.getElementById('ptr-label');
+  const arrow     = document.getElementById('ptr-arrow');
+  const spinner   = document.getElementById('ptr-spinner');
+  const label     = document.getElementById('ptr-label');
   const activeScreen = () => document.querySelector('.screen.active');
 
   document.addEventListener('touchstart', e => {
@@ -1477,7 +1882,7 @@ function clearAllData() {
     if (!pulling) return;
     const sc = activeScreen(); if (!sc || sc.scrollTop > 0) { pulling = false; return; }
     const dy = Math.max(0, e.touches[0].clientY - startY); if (dy <= 0) return;
-    const h = Math.min(dy * 0.5, THRESHOLD);
+    const h  = Math.min(dy * 0.5, THRESHOLD);
     indicator.style.height = h + 'px';
     const ready = dy * 0.5 >= THRESHOLD;
     arrow.classList.toggle('ready', ready);
